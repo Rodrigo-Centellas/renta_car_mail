@@ -21,44 +21,47 @@ import javax.mail.internet.MimeMultipart;
 import librerias.Email;
 
 /**
- * EmailSend configurado para Gmail
+ *
+
  */
 public class EmailSend implements Runnable {
 
-    // Configuración para Gmail
-    private final static String HOST = "smtp.gmail.com";
-    private final static String PORT_SMTP = "587";
-    private final static String USER = "rodrigodev06@gmail.com";
-    private final static String PASSWORD = "eyqh bfls noyl irvp";
-    private final static String MAIL = "rodrigodev06@gmail.com";
+    private final static String PORT_SMTP = "25";
+    private final static String PROTOCOL = "smtp";
+    private final static String HOST = "mail.tecnoweb.org.bo";
+    private final static String USER = "grupo20sa";
+    private final static String PASSWORD = "grup020grup020*";
+    private final static String MAIL = "grupo20sa@tecnoweb.org.bo";
+    private final static String MAIL_PASSWORD = "grup020grup020*";
 
     private Email email;
 
     public EmailSend(Email emailP) {
         this.email = emailP;
+        //this.email.setFrom(MAIL);
     }
 
     @Override
     public void run() {
         Properties properties = new Properties();
+        //properties.put("mail.transport.protocol", PROTOCOL);
         properties.setProperty("mail.smtp.host", HOST);
         properties.setProperty("mail.smtp.port", PORT_SMTP);
-        properties.setProperty("mail.smtp.starttls.enable", "true");
-        properties.setProperty("mail.smtp.auth", "true");
-        properties.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
-        properties.setProperty("mail.smtp.ssl.trust", HOST);
+        properties.setProperty("mail.smtp.tls.enable", "true");//cuando user tecnoweb
+        properties.setProperty("mail.smtp.ssl.enable", "*");// cuando usen Gmail
+        properties.setProperty("mail.smtp.auth", "false");// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 
         Session session = Session.getDefaultInstance(properties, new javax.mail.Authenticator() {
-            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(USER, PASSWORD);
+                return new PasswordAuthentication(USER, MAIL_PASSWORD);
             }
         });
 
         try {
-            MimeMessage message = new MimeMessage(session);
+            MimeMessage message;
+            message = new MimeMessage(session);
             message.setFrom(new InternetAddress(MAIL));
-            InternetAddress[] toAddresses = { new InternetAddress(email.getTo()) };
+            InternetAddress[] toAddresses = { new InternetAddress(email.getTo())};
 
             message.setRecipients(MimeMessage.RecipientType.TO, toAddresses);
             message.setSubject(email.getSubject());
@@ -72,14 +75,12 @@ public class EmailSend implements Runnable {
             message.saveChanges();
 
             Transport.send(message);
-            System.out.println("✅ Email enviado exitosamente a: " + email.getTo());
-
         } catch (NoSuchProviderException | AddressException ex) {
             Logger.getLogger(EmailSend.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("❌ Error de dirección de email: " + ex.getMessage());
         } catch (MessagingException ex) {
             Logger.getLogger(EmailSend.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("❌ Error enviando email: " + ex.getMessage());
+            System.out.println(ex.toString());
         }
     }
+
 }

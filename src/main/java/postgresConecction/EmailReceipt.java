@@ -12,20 +12,22 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.security.sasl.AuthenticationException;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import librerias.Email;
 
 /**
- * EmailReceipt configurado para Gmail con SSL
+ *
+ <<<<<<< HEAD
+
+ =======
+
+ >>>>>>> 9cc2ba8e93c238cc83415e9520acdb0549db524e
  */
 public class EmailReceipt implements Runnable {
 
-    // Configuración para Gmail POP3 con SSL
-    static final String HOST = "pop.gmail.com";
-    private final static int PORT_POP = 995; // Puerto SSL para Gmail
-    private final static String USER = "rodrigodev06@gmail.com";
-    private final static String PASSWORD = "eyqh bfls noyl irvp";
+    static final String HOST = "mail.tecnoweb.org.bo";//"localhost";  152.70.216.169
+    private final static int PORT_POP = 110;
+    private final static String USER = "grupo20sa";
+    private final static String PASSWORD = "grup020grup020*";
 
     private Socket socket;
     private BufferedReader input;
@@ -52,52 +54,39 @@ public class EmailReceipt implements Runnable {
 
     @Override
     public void run() {
-        System.out.println(" C : Conectando a Gmail POP3 SSL <" + HOST + ":" + PORT_POP + ">");
+        System.out.println(" C : Conectado a <" + HOST + ">");
         while (true) {
             try {
-                // Crear conexión SSL para Gmail
-                SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-                this.socket = factory.createSocket(HOST, PORT_POP);
-
+                this.socket = new Socket(HOST, PORT_POP);
                 List<Email> emails = null;
-
-                // Configurar streams
+                //abrimos un enlace con el cliente, un flujo, recibimos
                 input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+                //env un mensaje;
                 output = new DataOutputStream(socket.getOutputStream());
-
-                System.out.println("_________ Conexión SSL establecida con Gmail __________");
+                System.out.println("_________ Conexion establecida __________");
                 authUser(USER, PASSWORD);
                 int cant = this.getEmailCount();
-
-                if (cant > 0) {
-                    System.out.println("📧 Encontrados " + cant + " emails nuevos");
+                if (cant > 0){
                     emails = this.getEmails(cant);
-                    System.out.println("📨 Emails procesados: " + emails.size());
+                    System.out.println(emails);
                     this.deleteEmails(cant);
-                } else {
-                    System.out.println("📭 No hay emails nuevos");
                 }
-
                 output.writeBytes("QUIT \r\n");
                 input.readLine();
                 input.close();
                 output.close();
                 socket.close();
-                System.out.println("__________ Conexión cerrada ___________");
+                System.out.println("__________ Conexion cerrada ___________");
 
-                if (cant > 0 && emails != null) {
+                if (cant > 0){
                     this.emailListener.onReceiptEmail(emails);
                 }
-
             } catch (IOException e) {
-                System.err.println("❌ Error de conexión: " + e.getMessage());
-            } catch (Exception e) {
-                System.err.println("❌ Error general: " + e.getMessage());
+                System.out.println(" C : " + e.getMessage());
             }
-
-            System.out.println(" C : Desconectado de Gmail, esperando 5 segundos...");
+            System.out.println(" C : Desconectado del <" + HOST + ">");
             try {
-                Thread.sleep(5000); // Esperar 30 segundos entre verificaciones
+                Thread.sleep(5000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(EmailReceipt.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -106,78 +95,53 @@ public class EmailReceipt implements Runnable {
 
     private void deleteEmails(int emails) throws IOException {
         for (int i = 1; i <= emails; i++) {
-            output.writeBytes("DELE " + i + "\r\n");
+            output.writeBytes("DELE " + i + "\r\n");//Command.dele(i));
         }
-        System.out.println("🗑️ Eliminados " + emails + " emails del servidor");
     }
 
     private void authUser(String email, String password) throws IOException {
         if (socket != null && input != null && output != null) {
-            // Leer mensaje de bienvenida
-            String welcome = input.readLine();
-            System.out.println("S: " + welcome);
-
-            // Enviar USER
-            output.writeBytes("USER " + email + "\r\n");
-            String userResponse = input.readLine();
-            System.out.println("S: " + userResponse);
-
-            // Enviar PASSWORD
-            output.writeBytes("PASS " + password + "\r\n");
-            String passResponse = input.readLine();
-            System.out.println("S: " + passResponse);
-
-            if (passResponse.contains("-ERR")) {
-                throw new AuthenticationException("Error de autenticación Gmail: " + passResponse);
+            input.readLine();
+            output.writeBytes("USER " + email + "\r\n");//Command.user(email));
+            input.readLine();
+            output.writeBytes("PASS " + password + "\r\n");//Command.pass(password));
+            String message = input.readLine();
+            if (message.contains("-ERR")) {
+                throw new AuthenticationException();
             }
-
-            System.out.println("✅ Autenticación exitosa con Gmail");
         }
     }
 
     private int getEmailCount() throws IOException {
-        output.writeBytes("STAT \r\n");
+        output.writeBytes("STAT \r\n");//Command.stat());
         String line = input.readLine();
-        System.out.println("S: " + line);
-
-        // Respuesta esperada: +OK 14 6410 (emails count, total size)
+        //+OK 14 6410
         String[] data = line.split(" ");
-        if (data.length >= 2) {
-            return Integer.parseInt(data[1]);
-        }
-        return 0;
+        return Integer.parseInt(data[1]); //14
     }
 
     private List<Email> getEmails(int count) throws IOException {
         List<Email> emails = new ArrayList<>();
         for (int i = 1; i <= count; i++) {
-            System.out.println("📩 Descargando email " + i + " de " + count);
-            output.writeBytes("RETR " + i + "\r\n");
+            output.writeBytes("RETR " + i + "\r\n");//Command.retr(i));
             String text = readMultiline();
-            Email email = Email.getEmail(text);
-            if (email != null) {
-                emails.add(email);
-            }
+            emails.add(Email.getEmail(text));
         }
         return emails;
     }
 
     private String readMultiline() throws IOException {
-        StringBuilder lines = new StringBuilder();
+        String lines = "";
         while (true) {
             String line = input.readLine();
             if (line == null) {
-                throw new IOException("Servidor no responde (error al leer email)");
+                throw new IOException("Server no responde (error al abrir el correo)");
             }
             if (line.equals(".")) {
                 break;
             }
-            // Manejar líneas que empiezan con punto (escape del protocolo POP3)
-            if (line.startsWith("..")) {
-                line = line.substring(1);
-            }
-            lines.append("\n").append(line);
+            lines = lines + "\n" + line;
         }
-        return lines.toString();
+        return lines;
     }
 }

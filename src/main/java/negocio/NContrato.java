@@ -41,22 +41,11 @@ public class NContrato {
     }
 
     public List<String[]> update(List<String> params) throws SQLException {
-        // params: 0=id, 1=estado, 2=fecha_inicio, 3=fecha_fin,
-        //         4=frecuencia_pago_id, 5=nro_cuenta_id, 6=vehiculo_id
+        // params: 0=id, 1=nuevo_estado
+        // Solo se puede cambiar el estado del contrato
         int id                     = Integer.parseInt(params.get(0));
-        String estado              = params.get(1);
-        Date fechaInicio           = Date.valueOf(params.get(2));
-        Date fechaFin              = Date.valueOf(params.get(3));
-        int frecuenciaPagoId       = Integer.parseInt(params.get(4));
-        int nroCuentaId            = Integer.parseInt(params.get(5));
-        int vehiculoId             = Integer.parseInt(params.get(6));
-        return dao.update(id,
-                estado,
-                fechaInicio,
-                fechaFin,
-                frecuenciaPagoId,
-                nroCuentaId,
-                vehiculoId);
+        String nuevoEstado         = params.get(1);
+        return dao.update(id, nuevoEstado);
     }
 
     public List<String[]> delete(List<String> params) throws SQLException {

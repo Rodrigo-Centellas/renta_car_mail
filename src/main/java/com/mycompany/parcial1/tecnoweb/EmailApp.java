@@ -1195,183 +1195,160 @@ public class EmailApp implements ICasoUsoListener, IEmailListener {
         try {
             // Permitimos tanto "help" como "help get"
             if (event.getAction() == 0 || event.getAction() == Token.GET) {
-                String[] headers = {"Categoría", "Comando", "Descripción"};
+                String[] headers = {"Entidad", "Comando"};
                 ArrayList<String[]> data = new ArrayList<>();
 
-                /* ─────────────── TABLAS BÁSICAS ─────────────── */
+                /* ═══════════════════════════ TABLAS BÁSICAS ═══════════════════════════ */
 
-                // Rol
-                data.add(new String[]{"Rol", "rol get()",                         "Lista todos los roles"});
-                data.add(new String[]{"Rol", "rol get(<id>)",                    "Obtiene rol por ID"});
-                data.add(new String[]{"Rol", "rol add(<nombre>)",                "Crea un rol"});
-                data.add(new String[]{"Rol", "rol modify(<id>,<nombre>)",        "Modifica un rol"});
-                data.add(new String[]{"Rol", "rol delete(<id>)",                 "Elimina un rol"});
+                // 🎯 ROL
+                data.add(new String[]{"ROL", "rol get() → Lista todos"});
+                data.add(new String[]{"ROL", "rol get(id) → Obtiene por ID"});
+                data.add(new String[]{"ROL", "rol add(nombre)"});
+                data.add(new String[]{"ROL", "rol modify(id,nombre)"});
+                data.add(new String[]{"ROL", "rol delete(id)"});
 
-                // User
-                data.add(new String[]{"User", "user get()",                      "Lista todos los usuarios"});
-                data.add(new String[]{"User", "user get(<id>)",                  "Obtiene usuario por ID"});
-                data.add(new String[]{"User", "user add(<apellido>,<ci>,<domicilio>,<nombre>,<telefono>)",
-                        "Crea un usuario"});
-                data.add(new String[]{"User", "user modify(<id>,<apellido>,<ci>,<domicilio>,<nombre>,<telefono>)",
-                        "Modifica un usuario"});
-                data.add(new String[]{"User", "user delete(<id>)",               "Elimina un usuario"});
+                // 👤 USER
+                data.add(new String[]{"USER", "user get() → Lista todos"});
+                data.add(new String[]{"USER", "user get(id) → Obtiene por ID"});
+                data.add(new String[]{"USER", "user add(apellido,ci,domicilio,nombre,telefono,email,password,doc_frontal_path,doc_trasero_path)"});
+                data.add(new String[]{"USER", "user modify(id,apellido,ci,domicilio,nombre,telefono,email,password,doc_frontal_path,doc_trasero_path)"});
+                data.add(new String[]{"USER", "user delete(id)"});
 
-                // Vehiculo
-                data.add(new String[]{"Vehiculo", "vehiculo get()",                      "Lista todos los vehículos"});
-                data.add(new String[]{"Vehiculo", "vehiculo get(<id>)",                 "Obtiene vehículo por ID"});
-                data.add(new String[]{"Vehiculo", "vehiculo add(<estado>,<monto_garantia>,<precio_dia>,<tipo>)",
-                        "Crea un vehículo"});
-                data.add(new String[]{"Vehiculo", "vehiculo modify(<id>,<estado>,<monto_garantia>,<precio_dia>,<tipo>)",
-                        "Modifica un vehículo"});
-                data.add(new String[]{"Vehiculo", "vehiculo delete(<id>)",              "Elimina un vehículo"});
+                // 🚗 VEHÍCULO
+                data.add(new String[]{"VEHICULO", "vehiculo get() → Lista todos"});
+                data.add(new String[]{"VEHICULO", "vehiculo get(id) → Obtiene por ID"});
+                data.add(new String[]{"VEHICULO", "vehiculo add(estado,marca,modelo,monto_garantia,placa,precio_dia,tipo,url_imagen)"});
+                data.add(new String[]{"VEHICULO", "vehiculo modify(id,estado,marca,modelo,monto_garantia,placa,precio_dia,tipo,url_imagen)"});
+                data.add(new String[]{"VEHICULO", "vehiculo delete(id)"});
 
-                // Garante
-                data.add(new String[]{"Garante", "garante get()",                      "Lista todos los garantes"});
-                data.add(new String[]{"Garante", "garante get(<id>)",                 "Obtiene garante por ID"});
-                data.add(new String[]{"Garante", "garante add(<apellido>,<ci>,<domicilio>,<nombre>,<telefono>)",
-                        "Crea un garante"});
-                data.add(new String[]{"Garante", "garante modify(<id>,<apellido>,<ci>,<domicilio>,<nombre>,<telefono>)",
-                        "Modifica un garante"});
-                data.add(new String[]{"Garante", "garante delete(<id>)",              "Elimina un garante"});
+                // 🛡️ GARANTE
+                data.add(new String[]{"GARANTE", "garante get() → Lista todos"});
+                data.add(new String[]{"GARANTE", "garante get(id) → Obtiene por ID"});
+                data.add(new String[]{"GARANTE", "garante add(apellido,ci,domicilio,nombre,telefono)"});
+                data.add(new String[]{"GARANTE", "garante modify(id,apellido,ci,domicilio,nombre,telefono)"});
+                data.add(new String[]{"GARANTE", "garante delete(id)"});
 
-                // Mantenimiento
-                data.add(new String[]{"Mantenimiento", "mantenimiento get()",                      "Lista todos los mantenimientos"});
-                data.add(new String[]{"Mantenimiento", "mantenimiento get(<id>)",                 "Obtiene mantenimiento por ID"});
-                data.add(new String[]{"Mantenimiento", "mantenimiento add(<descripcion>,<nombre>)",
-                        "Crea un mantenimiento"});
-                data.add(new String[]{"Mantenimiento", "mantenimiento modify(<id>,<descripcion>,<nombre>)",
-                        "Modifica un mantenimiento"});
-                data.add(new String[]{"Mantenimiento", "mantenimiento delete(<id>)",              "Elimina un mantenimiento"});
+                // 🔧 MANTENIMIENTO
+                data.add(new String[]{"MANTENIMIENTO", "mantenimiento get() → Lista todos"});
+                data.add(new String[]{"MANTENIMIENTO", "mantenimiento get(id) → Obtiene por ID"});
+                data.add(new String[]{"MANTENIMIENTO", "mantenimiento add(descripcion,nombre)"});
+                data.add(new String[]{"MANTENIMIENTO", "mantenimiento modify(id,descripcion,nombre)"});
+                data.add(new String[]{"MANTENIMIENTO", "mantenimiento delete(id)"});
 
-                // FrecuenciaPago
-                data.add(new String[]{"FrecuenciaPago", "frecuenciapago get()",                      "Lista todas las frecuencias de pago"});
-                data.add(new String[]{"FrecuenciaPago", "frecuenciapago get(<id>)",                 "Obtiene frecuencia por ID"});
-                data.add(new String[]{"FrecuenciaPago", "frecuenciapago add(<frecuencia_dias>,<nombre>)",
-                        "Crea una frecuencia de pago"});
-                data.add(new String[]{"FrecuenciaPago", "frecuenciapago modify(<id>,<frecuencia_dias>,<nombre>)",
-                        "Modifica una frecuencia de pago"});
-                data.add(new String[]{"FrecuenciaPago", "frecuenciapago delete(<id>)",              "Elimina una frecuencia de pago"});
+                // 💰 FRECUENCIA PAGO
+                data.add(new String[]{"FRECUENCIA_PAGO", "frecuenciapago get() → Lista todos"});
+                data.add(new String[]{"FRECUENCIA_PAGO", "frecuenciapago get(id) → Obtiene por ID"});
+                data.add(new String[]{"FRECUENCIA_PAGO", "frecuenciapago add(frecuencia_dias,nombre)"});
+                data.add(new String[]{"FRECUENCIA_PAGO", "frecuenciapago modify(id,frecuencia_dias,nombre)"});
+                data.add(new String[]{"FRECUENCIA_PAGO", "frecuenciapago delete(id)"});
 
-                // NroCuenta
-                data.add(new String[]{"NroCuenta", "nrocuenta get()",                      "Lista todas las cuentas bancarias"});
-                data.add(new String[]{"NroCuenta", "nrocuenta get(<id>)",                 "Obtiene cuenta por ID"});
-                data.add(new String[]{"NroCuenta", "nrocuenta add(<banco>,<nro_cuenta>)",
-                        "Crea una cuenta bancaria"});
-                data.add(new String[]{"NroCuenta", "nrocuenta modify(<id>,<banco>,<nro_cuenta>)",
-                        "Modifica una cuenta bancaria"});
-                data.add(new String[]{"NroCuenta", "nrocuenta delete(<id>)",              "Elimina una cuenta bancaria"});
+                // 🏦 NRO CUENTA
+                data.add(new String[]{"NRO_CUENTA", "nrocuenta get() → Lista todos"});
+                data.add(new String[]{"NRO_CUENTA", "nrocuenta get(id) → Obtiene por ID"});
+                data.add(new String[]{"NRO_CUENTA", "nrocuenta add(banco,nro_cuenta,es_activa)"});
+                data.add(new String[]{"NRO_CUENTA", "nrocuenta modify(id,banco,nro_cuenta,es_activa)"});
+                data.add(new String[]{"NRO_CUENTA", "nrocuenta delete(id)"});
 
-                // Clausula
-                data.add(new String[]{"Clausula", "clausula get()",                      "Lista todas las cláusulas"});
-                data.add(new String[]{"Clausula", "clausula get(<id>)",                 "Obtiene cláusula por ID"});
-                data.add(new String[]{"Clausula", "clausula add(<descripcion>)",        "Crea una cláusula"});
-                data.add(new String[]{"Clausula", "clausula modify(<id>,<descripcion>)", "Modifica una cláusula"});
-                data.add(new String[]{"Clausula", "clausula delete(<id>)",               "Elimina una cláusula"});
+                // 📋 CLÁUSULA
+                data.add(new String[]{"CLAUSULA", "clausula get() → Lista todos"});
+                data.add(new String[]{"CLAUSULA", "clausula get(id) → Obtiene por ID"});
+                data.add(new String[]{"CLAUSULA", "clausula add(descripcion,activa)"});
+                data.add(new String[]{"CLAUSULA", "clausula modify(id,descripcion,activa)"});
+                data.add(new String[]{"CLAUSULA", "clausula delete(id)"});
 
-                /* ─────────────── RELACIONES / TABLAS INTERMEDIAS ─────────────── */
+                /* ═══════════════════════════ RELACIONES ═══════════════════════════ */
 
-                // VehiculoMantenimiento
-                data.add(new String[]{"VehiculoMantenimiento", "vehiculomantenimiento get()",
-                        "Lista registros de vehículo-mantenimiento"});
-                data.add(new String[]{"VehiculoMantenimiento",
-                        "vehiculomantenimiento add(<fecha>,<monto>,<vehiculo_id>,<mantenimiento_id>)",
-                        "Registra un mantenimiento realizado"});
-                data.add(new String[]{"VehiculoMantenimiento", "vehiculomantenimiento delete(<id>)",
-                        "Elimina un registro de mantenimiento"});
+                // 🔗 USER HAS ROLE
+                data.add(new String[]{"USER_HAS_ROLE", "userhasrole get() → Lista todos"});
+                data.add(new String[]{"USER_HAS_ROLE", "userhasrole get(id) → Obtiene por ID"});
+                data.add(new String[]{"USER_HAS_ROLE", "userhasrole add(user_id,role_id)"});
+                data.add(new String[]{"USER_HAS_ROLE", "userhasrole modify(id,user_id,role_id)"});
+                data.add(new String[]{"USER_HAS_ROLE", "userhasrole delete(id)"});
 
-                // Contrato_Clausula
-                data.add(new String[]{"Contrato_Clausula", "contratoclausula get()",
-                        "Lista asociaciones contrato-cláusula"});
-                data.add(new String[]{"Contrato_Clausula",
-                        "contratoclausula add(<contrato_id>,<clausula_id>)",
-                        "Asocia una cláusula a un contrato"});
-                data.add(new String[]{"Contrato_Clausula", "contratoclausula delete(<id>)",
-                        "Quita la asociación contrato-cláusula"});
+                // 🔗 VEHÍCULO MANTENIMIENTO
+                data.add(new String[]{"VEHICULO_MANT", "vehiculomantenimiento get() → Lista todos"});
+                data.add(new String[]{"VEHICULO_MANT", "vehiculomantenimiento get(id) → Obtiene por ID"});
+                data.add(new String[]{"VEHICULO_MANT", "vehiculomantenimiento add(fecha,monto,vehiculo_id,mantenimiento_id)"});
+                data.add(new String[]{"VEHICULO_MANT", "vehiculomantenimiento modify(id,fecha,monto,vehiculo_id,mantenimiento_id)"});
+                data.add(new String[]{"VEHICULO_MANT", "vehiculomantenimiento delete(id)"});
 
-                // Reserva_Vehiculo
-                data.add(new String[]{"Reserva_Vehiculo", "reserva_vehiculo get()",
-                        "Lista asociaciones reserva-vehículo"});
-                data.add(new String[]{"Reserva_Vehiculo",
-                        "reserva_vehiculo add(<fecha>,<reserva_id>,<vehiculo_id>)",
-                        "Asocia un vehículo a una reserva"});
-                data.add(new String[]{"Reserva_Vehiculo", "reserva_vehiculo delete(<id>)",
-                        "Elimina la asociación reserva-vehículo"});
+                // 🔗 CONTRATO CLÁUSULA
+                data.add(new String[]{"CONTRATO_CLAUS", "contratoclausula get() → Lista todos"});
+                data.add(new String[]{"CONTRATO_CLAUS", "contratoclausula get(id) → Obtiene por ID"});
+                data.add(new String[]{"CONTRATO_CLAUS", "contratoclausula add(contrato_id,clausula_id)"});
+                data.add(new String[]{"CONTRATO_CLAUS", "contratoclausula modify(id,contrato_id,clausula_id)"});
+                data.add(new String[]{"CONTRATO_CLAUS", "contratoclausula delete(id)"});
 
-                // UserContrato
-                data.add(new String[]{"UserContrato", "usercontrato get()",
-                        "Lista asociaciones usuario-contrato"});
-                data.add(new String[]{"UserContrato", "usercontrato add(<user_id>,<contrato_id>)",
-                        "Asocia un usuario a un contrato"});
-                data.add(new String[]{"UserContrato", "usercontrato delete(<id>)",
-                        "Elimina la asociación usuario-contrato"});
+                /* ═══════════════════════════ ENTIDADES DE NEGOCIO ═══════════════════════════ */
 
-                /* ─────────────── ENTIDADES DE NEGOCIO ─────────────── */
+// 📄 CONTRATO
+                data.add(new String[]{"CONTRATO", "contrato get() → Lista todos los contratos (tabla completa)"});
+                data.add(new String[]{"CONTRATO", "contrato get(id) → Obtiene contrato específico por ID"});
+                data.add(new String[]{"CONTRATO", "contrato add(estado,fecha_inicio,fecha_fin,frecuencia_pago_id,nro_cuenta_id,vehiculo_id) → Crea contrato, marca vehículo como alquilado, genera pago garantía + pagos diarios"});
+                data.add(new String[]{"CONTRATO", "contrato modify(id,nuevo_estado) → Cambia solo el estado (finalizado/cancelado libera vehículo)"});
+                data.add(new String[]{"CONTRATO", "contrato delete(id) → Elimina contrato y libera vehículo automáticamente"});
+                // 🔗 USER CONTRATO
+                data.add(new String[]{"USER_CONTRATO", "usercontrato get() → Lista todos"});
+                data.add(new String[]{"USER_CONTRATO", "usercontrato get(id) → Obtiene por ID"});
+                data.add(new String[]{"USER_CONTRATO", "usercontrato add(user_id,contrato_id)"});
+                data.add(new String[]{"USER_CONTRATO", "usercontrato modify(id,user_id,contrato_id)"});
+                data.add(new String[]{"USER_CONTRATO", "usercontrato delete(id)"});
 
-                // Contrato
-                data.add(new String[]{"Contrato", "contrato get()",
-                        "Lista todos los contratos"});
-                data.add(new String[]{"Contrato", "contrato get(<id>)",
-                        "Obtiene contrato por ID"});
-                data.add(new String[]{"Contrato",
-                        "contrato add(<estado>,<fecha_inicio>,<fecha_fin>,<frecuencia_pago_id>,<nro_cuenta_id>,<garante_id>,<vehiculo_id>)",
-                        "Crea un contrato"});
-                data.add(new String[]{"Contrato", "contrato modify(<id>,<estado>,<fecha_fin>)",
-                        "Modifica un contrato"});
-                data.add(new String[]{"Contrato", "contrato delete(<id>)",
-                        "Elimina un contrato"});
+                // 🔗 CONTRATO PAGO
+                data.add(new String[]{"CONTRATO_PAGO", "contratopago get() → Lista todos"});
+                data.add(new String[]{"CONTRATO_PAGO", "contratopago get(id) → Obtiene por ID"});
+                data.add(new String[]{"CONTRATO_PAGO", "contratopago add(contrato_id,pago_id)"});
+                data.add(new String[]{"CONTRATO_PAGO", "contratopago modify(id,contrato_id,pago_id)"});
+                data.add(new String[]{"CONTRATO_PAGO", "contratopago delete(id)"});
 
-                // ContratoPago
-                data.add(new String[]{"ContratoPago", "contratopago get()",
-                        "Lista todos los pagos de contrato"});
-                data.add(new String[]{"ContratoPago", "contratopago get(<id>)",
-                        "Obtiene vínculo contrato-pago por ID"});
-                data.add(new String[]{"ContratoPago", "contratopago add(<contrato_id>,<pago_id>)",
-                        "Registra un pago en un contrato"});
-                data.add(new String[]{"ContratoPago", "contratopago delete(<id>)",
-                        "Elimina un vínculo contrato-pago"});
+                // 📅 RESERVA
+                data.add(new String[]{"RESERVA", "reserva get() → Lista todos"});
+                data.add(new String[]{"RESERVA", "reserva get(id) → Obtiene por ID"});
+                data.add(new String[]{"RESERVA", "reserva add(estado,vehiculo_id,user_id) → Crea pago automático"});
+                data.add(new String[]{"RESERVA", "reserva modify(id,estado,vehiculo_id,user_id)"});
+                data.add(new String[]{"RESERVA", "reserva delete(id)"});
 
-                // Reserva
-                data.add(new String[]{"Reserva", "reserva get()",                      "Lista todas las reservas"});
-                data.add(new String[]{"Reserva", "reserva get(<id>)",                 "Obtiene reserva por ID"});
-                data.add(new String[]{"Reserva", "reserva add(<estado>,<vehiculo_id>,<user_id>)",
-                        "Crea una reserva"});
-                data.add(new String[]{"Reserva", "reserva modify(<id>,<estado>)",     "Modifica el estado de una reserva"});
-                data.add(new String[]{"Reserva", "reserva delete(<id>)",              "Elimina una reserva"});
+                // 💳 PAGO
+                data.add(new String[]{"PAGO", "pago get() → Lista todos"});
+                data.add(new String[]{"PAGO", "pago get(id) → Obtiene por ID"});
+                data.add(new String[]{"PAGO", "pago add(desde,fecha,hasta,estado,tipo_pago,pagofacil_transaction_id,reserva_id)"});
+                data.add(new String[]{"PAGO", "pago modify(id,desde,fecha,hasta,estado,tipo_pago,pagofacil_transaction_id,reserva_id)"});
+                data.add(new String[]{"PAGO", "pago delete(id)"});
 
-                // Pago
-                data.add(new String[]{"Pago", "pago get()",                      "Lista todos los pagos"});
-                data.add(new String[]{"Pago", "pago get(<id>)",                 "Obtiene pago por ID"});
-                data.add(new String[]{"Pago",
-                        "pago add(<desde>,<fecha>,<hasta>,<estado>,<tipo_pago>,<reserva_id>)",
-                        "Crea un pago y marca la reserva como pagada"});
-                data.add(new String[]{"Pago",
-                        "pago modify(<id>,<desde>,<fecha>,<hasta>,<estado>,<tipo_pago>,<reserva_id>)",
-                        "Modifica un pago existente"});
-                data.add(new String[]{"Pago", "pago delete(<id>)",              "Elimina un pago"});
+                // 🔔 NOTIFICACIÓN
+                data.add(new String[]{"NOTIFICACION", "notificacion get() → Lista todos"});
+                data.add(new String[]{"NOTIFICACION", "notificacion get(id) → Obtiene por ID"});
+                data.add(new String[]{"NOTIFICACION", "notificacion add(fecha,mensaje,tipo,user_id)"});
+                data.add(new String[]{"NOTIFICACION", "notificacion modify(id,fecha,mensaje,tipo,user_id)"});
+                data.add(new String[]{"NOTIFICACION", "notificacion delete(id)"});
 
-                // Notificación
-                data.add(new String[]{"Notificación", "notificacion get()",          "Lista todas las notificaciones"});
-                data.add(new String[]{"Notificación", "notificacion get(<id>)",     "Obtiene notificación por ID"});
-                data.add(new String[]{"Notificación",
-                        "notificacion add(<fecha>,<mensaje>,<tipo>,<user_id>)",
-                        "Crea una notificación"});
-                data.add(new String[]{"Notificación", "notificacion delete(<id>)",  "Elimina una notificación"});
+                /* ═══════════════════════════ REPORTES Y ESPECIALES ═══════════════════════════ */
 
-                /* ─────────────── REPORTES ─────────────── */
+                data.add(new String[]{"REPORTES", "report(ingresos,fecha_inicio,fecha_fin) → Resumen de ingresos"});
+                data.add(new String[]{"AYUDA", "help() o help get() → Muestra esta ayuda"});
 
-                data.add(new String[]{"Reportes",
-                        "report(ingresos,<fecha_inicio>,<fecha_fin>)",
-                        "Resumen de ingresos entre dos fechas"});
+                /* ═══════════════════════════ NOTAS IMPORTANTES ═══════════════════════════ */
+
+                data.add(new String[]{"📝 NOTA", "Fechas formato: YYYY-MM-DD (ej: 2024-01-15)"});
+                data.add(new String[]{"📝 NOTA", "Booleanos: true o false (sin comillas)"});
+                data.add(new String[]{"📝 NOTA", "Números: sin comillas (ej: 1000, 120.5)"});
+                data.add(new String[]{"📝 NOTA", "Texto null: usar null (sin comillas)"});
+                data.add(new String[]{"📝 NOTA", "NO usar comillas simples en parámetros"});
 
                 // Envía la tabla al emisor
-                tableNotifySuccess(event.getSender(), "Comandos disponibles detallados", headers, data);
+                tableNotifySuccess(
+                        event.getSender(),
+                        "🚀 COMANDOS DISPONIBLES - SISTEMA DE GESTIÓN VEHICULAR",
+                        headers,
+                        data,
+                        event.getCommand()
+                );
             }
         } catch (Exception ex) {
             handleError(CONSTRAINTS_ERROR, event.getSender(),
                     Collections.singletonList("Error: " + ex.getMessage()));
         }
     }
-
 
 
     @Override

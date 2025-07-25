@@ -44,8 +44,9 @@ public class DClausula {
         return resultado;
     }
 
-    public List<String[]> save(String descripcion,String activa) throws SQLException {
-        String query = "INSERT INTO \"clausulas\" (descripcion) VALUES (?) RETURNING id";
+    public List<String[]> save(String descripcion, String activa) throws SQLException {
+        // CORRECCIÓN: Agregué el campo activa al INSERT
+        String query = "INSERT INTO \"clausulas\" (descripcion, activa) VALUES (?, ?) RETURNING id";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, descripcion);
@@ -61,12 +62,13 @@ public class DClausula {
     }
 
     public List<String[]> update(int id, String descripcion, String activa) throws SQLException {
-        String query = "UPDATE \"clausulas\" SET descripcion = ? WHERE id = ?";
+        // CORRECCIÓN: Agregué el campo activa al UPDATE
+        String query = "UPDATE \"clausulas\" SET descripcion = ?, activa = ? WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, descripcion);
-            ps.setInt(2, id);
-            ps.setString(3, activa);
+            ps.setString(2, activa);
+            ps.setInt(3, id);
             if (ps.executeUpdate() == 0) {
                 throw new SQLException("Error al actualizar clausulas.");
             }
@@ -75,7 +77,6 @@ public class DClausula {
     }
 
     public List<String[]> delete(int id) throws SQLException {
-        //List<String[]> lista = list();
         String query = "DELETE FROM \"clausulas\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
