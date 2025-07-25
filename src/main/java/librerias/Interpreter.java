@@ -86,14 +86,14 @@ public class Interpreter implements Runnable {
             case Token.CONTRATO_CLAUSULA:
                 IcasoUsoListener.contratoClausula(paramsAction);
                 break;
-            case Token.RESERVA_VEHICULO:
-                IcasoUsoListener.reservaVehiculo(paramsAction);
-                break;
             case Token.NOTIFICACION:
                 IcasoUsoListener.notificacion(paramsAction);
                 break;
             case Token.CONTRATO:
                 IcasoUsoListener.contrato(paramsAction);
+                break;
+            case Token.USERHASROLE:
+                IcasoUsoListener.userHasRole(paramsAction);
                 break;
             case Token.CONTRATO_PAGO:
                 IcasoUsoListener.contratoPago(paramsAction);

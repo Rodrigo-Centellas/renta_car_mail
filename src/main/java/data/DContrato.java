@@ -94,7 +94,7 @@ public class DContrato {
                                  int vehiculoId) throws SQLException {
         String sql = "UPDATE \"Contrato\" SET " +
                 "estado = ?, fecha_inicio = ?, fecha_fin = ?, " +
-                "frecuencia_pago_id = ?, nro_cuenta_id = ? = ?, vehiculo_id = ? " +
+                "frecuencia_pago_id = ?, nro_cuenta_id = ?, vehiculo_id = ?" +
                 "WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
