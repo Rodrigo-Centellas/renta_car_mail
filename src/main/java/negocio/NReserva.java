@@ -23,23 +23,25 @@ public class NReserva {
     }
 
     /**
-     * Ahora sólo esperamos: estado, vehiculo_id, user_id
+     * Crea una reserva y automáticamente un pago asociado.
+     * Parámetros: estado, vehiculo_id, user_id
      */
     public List<String[]> save(List<String> params) throws SQLException {
-        String estado     = params.get(0);
-        int vehiculoId    = Integer.parseInt(params.get(1));
-        int userId        = Integer.parseInt(params.get(2));
+        String estado = params.get(0);
+        int vehiculoId = Integer.parseInt(params.get(1));
+        int userId = Integer.parseInt(params.get(2));
         return dao.save(estado, vehiculoId, userId);
     }
 
     /**
-     * No recibe fecha y la mantiene intacta.
+     * Actualiza una reserva existente.
+     * Parámetros: id, estado, vehiculo_id, user_id
      */
     public List<String[]> update(List<String> params) throws SQLException {
-        int id            = Integer.parseInt(params.get(0));
-        String estado     = params.get(1);
-        int vehiculoId    = Integer.parseInt(params.get(2));
-        int userId        = Integer.parseInt(params.get(3));
+        int id = Integer.parseInt(params.get(0));
+        String estado = params.get(1);
+        int vehiculoId = Integer.parseInt(params.get(2));
+        int userId = Integer.parseInt(params.get(3));
         return dao.update(id, estado, vehiculoId, userId);
     }
 
