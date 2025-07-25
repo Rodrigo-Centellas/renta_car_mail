@@ -33,7 +33,7 @@ public class DReserva {
 
     public List<String[]> get(int id) throws SQLException {
         List<String[]> result = new ArrayList<>();
-        String sql = "SELECT * FROM \"Reserva\" WHERE id = ?";
+        String sql = "SELECT * FROM \"reservas\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -54,15 +54,15 @@ public class DReserva {
     }
 
     /**
-     * Crea una reserva y automáticamente genera un pago asociado.
+     * Crea una reservas y automáticamente genera un pagos asociado.
      */
     public List<String[]> save(String estado, int vehiculoId, int userId) throws SQLException {
         try (Connection conn = connection.connect()) {
             conn.setAutoCommit(false); // Iniciar transacción
 
             try {
-                // 1. Crear la reserva
-                String sqlReserva = "INSERT INTO \"Reserva\" " +
+                // 1. Crear la reservas
+                String sqlReserva = "INSERT INTO \"reservas\" " +
                         "(estado, fecha, vehiculo_id, user_id) " +
                         "VALUES (?, CURRENT_TIMESTAMP, ?, ?) RETURNING id";
 
@@ -74,7 +74,7 @@ public class DReserva {
 
                     try (ResultSet rs = psReserva.executeQuery()) {
                         if (!rs.next()) {
-                            throw new SQLException("No se pudo crear la reserva");
+                            throw new SQLException("No se pudo crear la reservas");
                         }
                         reservaId = rs.getInt(1);
                     }
@@ -94,24 +94,24 @@ public class DReserva {
                     }
                 }
 
-                // 3. Crear pago automático (por defecto 1 día de renta)
+                // 3. Crear pagos automático (por defecto 1 día de renta)
                 LocalDate hoy = LocalDate.now();
                 Date fechaDesde = Date.valueOf(hoy);
                 Date fechaHasta = Date.valueOf(hoy.plusDays(1));
                 Date fechaPago = Date.valueOf(hoy);
 
-                String sqlPago = "INSERT INTO \"Pago\" " +
-                        "(desde, fecha, hasta, estado, monto, tipo_pago, pagofacil_transaction_id, reserva_id) " +
+                String sqlPago = "INSERT INTO \"pagos\" " +
+                        "(desde, fecha, hasta, estado,pagofacil_transaction_id, monto, tipo_pago, reserva_id) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
                 try (PreparedStatement psPago = conn.prepareStatement(sqlPago)) {
                     psPago.setDate(1, fechaDesde);
                     psPago.setDate(2, fechaPago);
                     psPago.setDate(3, fechaHasta);
-                    psPago.setString(4, "PENDIENTE");
-                    psPago.setFloat(5, precioDia); // Monto = precio por día
-                    psPago.setString(6, "PENDIENTE");
-                    psPago.setString(7, null); // Sin transaction ID inicial
+                    psPago.setString(4, "PENDIENTE"); //estado
+                    psPago.setString(5, null); // Monto = precio por día
+                    psPago.setFloat(6, precioDia); //tipo_pago
+                    psPago.setString(7, "reserva"); // Sin transaction ID inicial
                     psPago.setInt(8, reservaId);
 
                     psPago.executeUpdate();
@@ -120,7 +120,7 @@ public class DReserva {
                 // 4. Commit de la transacción
                 conn.commit();
 
-                // 5. Retornar la reserva creada
+                // 5. Retornar la reservas creada
                 return get(reservaId);
 
             } catch (SQLException e) {
@@ -136,7 +136,7 @@ public class DReserva {
      * No tocamos la fecha al actualizar.
      */
     public List<String[]> update(int id, String estado, int vehiculoId, int userId) throws SQLException {
-        String sql = "UPDATE \"Reserva\" SET " +
+        String sql = "UPDATE \"reservas\" SET " +
                 "estado = ?, vehiculo_id = ?, user_id = ? " +
                 "WHERE id = ?";
         try (Connection conn = connection.connect();
@@ -146,19 +146,19 @@ public class DReserva {
             ps.setInt(3, userId);
             ps.setInt(4, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al actualizar Reserva.");
+                throw new SQLException("Error al actualizar reservas.");
             }
         }
         return get(id);
     }
 
     public List<String[]> delete(int id) throws SQLException {
-        String sql = "DELETE FROM \"Reserva\" WHERE id = ?";
+        String sql = "DELETE FROM \"reservas\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al eliminar Reserva.");
+                throw new SQLException("Error al eliminar reservas.");
             }
         }
         return list();
@@ -166,7 +166,7 @@ public class DReserva {
 
     public List<String[]> list() throws SQLException {
         List<String[]> list = new ArrayList<>();
-        String sql = "SELECT * FROM \"Reserva\"";
+        String sql = "SELECT * FROM \"reservas\"";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {

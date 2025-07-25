@@ -28,7 +28,7 @@ public class DFrecuenciaPago {
 
     public List<String[]> get(int id) throws SQLException {
         List<String[]> resultado = new ArrayList<>();
-        String query = "SELECT * FROM \"FrecuenciaPago\" WHERE id = ?";
+        String query = "SELECT * FROM \"frecuencia_pagos\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
@@ -46,7 +46,7 @@ public class DFrecuenciaPago {
     }
 
     public List<String[]> save(int frecuenciaDias, String nombre) throws SQLException {
-        String query = "INSERT INTO \"FrecuenciaPago\" (frecuencia_dias, nombre) VALUES (?, ?) RETURNING id";
+        String query = "INSERT INTO \"frecuencia_pagos\" (frecuencia_dias, nombre) VALUES (?, ?) RETURNING id";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, frecuenciaDias);
@@ -58,18 +58,18 @@ public class DFrecuenciaPago {
                 }
             }
         }
-        throw new SQLException("Error al insertar FrecuenciaPago.");
+        throw new SQLException("Error al insertar frecuencia_pagos.");
     }
 
     public List<String[]> update(int id, int frecuenciaDias, String nombre) throws SQLException {
-        String query = "UPDATE \"FrecuenciaPago\" SET frecuencia_dias = ?, nombre = ? WHERE id = ?";
+        String query = "UPDATE \"frecuencia_pagos\" SET frecuencia_dias = ?, nombre = ? WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, frecuenciaDias);
             ps.setString(2, nombre);
             ps.setInt(3, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al actualizar FrecuenciaPago.");
+                throw new SQLException("Error al actualizar frecuencia_pagos.");
             }
         }
         return get(id);
@@ -77,12 +77,12 @@ public class DFrecuenciaPago {
 
     public List<String[]> delete(int id) throws SQLException {
         //List<String[]> lista = list();
-        String query = "DELETE FROM \"FrecuenciaPago\" WHERE id = ?";
+        String query = "DELETE FROM \"frecuencia_pagos\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al eliminar FrecuenciaPago.");
+                throw new SQLException("Error al eliminar frecuencia_pagos.");
             }
         }
         return list();
@@ -90,7 +90,7 @@ public class DFrecuenciaPago {
 
     public List<String[]> list() throws SQLException {
         List<String[]> lista = new ArrayList<>();
-        String query = "SELECT * FROM \"FrecuenciaPago\"";
+        String query = "SELECT * FROM \"frecuencia_pagos\"";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {

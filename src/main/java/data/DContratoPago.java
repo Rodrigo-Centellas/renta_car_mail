@@ -30,7 +30,7 @@ public class DContratoPago {
 
     public List<String[]> get(int id) throws SQLException {
         List<String[]> result = new ArrayList<>();
-        String sql = "SELECT * FROM \"ContratoPago\" WHERE id = ?";
+        String sql = "SELECT * FROM \"contrato_pagos\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -48,7 +48,7 @@ public class DContratoPago {
     }
 
     public List<String[]> save(int contratoId, int pagoId) throws SQLException {
-        String sql = "INSERT INTO \"ContratoPago\" (contrato_id, pago_id) VALUES (?, ?) RETURNING id";
+        String sql = "INSERT INTO \"contrato_pagos\" (contrato_id, pago_id) VALUES (?, ?) RETURNING id";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, contratoId);
@@ -59,18 +59,18 @@ public class DContratoPago {
                 }
             }
         }
-        throw new SQLException("Error al insertar ContratoPago.");
+        throw new SQLException("Error al insertar contrato_pagos.");
     }
 
     public List<String[]> update(int id, int contratoId, int pagoId) throws SQLException {
-        String sql = "UPDATE \"ContratoPago\" SET contrato_id = ?, pago_id = ? WHERE id = ?";
+        String sql = "UPDATE \"contrato_pagos\" SET contrato_id = ?, pago_id = ? WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, contratoId);
             ps.setInt(2, pagoId);
             ps.setInt(3, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al actualizar ContratoPago.");
+                throw new SQLException("Error al actualizar contrato_pagos.");
             }
         }
         return get(id);
@@ -78,12 +78,12 @@ public class DContratoPago {
 
     public List<String[]> delete(int id) throws SQLException {
         //List<String[]> remaining = list();
-        String sql = "DELETE FROM \"ContratoPago\" WHERE id = ?";
+        String sql = "DELETE FROM \"contrato_pagos\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al eliminar ContratoPago.");
+                throw new SQLException("Error al eliminar contrato_pagos.");
             }
         }
         return list();
@@ -91,7 +91,7 @@ public class DContratoPago {
 
     public List<String[]> list() throws SQLException {
         List<String[]> list = new ArrayList<>();
-        String sql = "SELECT * FROM \"ContratoPago\"";
+        String sql = "SELECT * FROM \"contrato_pagos\"";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {

@@ -95,9 +95,9 @@ public class EmailReceipt implements Runnable {
                 System.err.println("❌ Error general: " + e.getMessage());
             }
 
-            System.out.println(" C : Desconectado de Gmail, esperando 3 segundos...");
+            System.out.println(" C : Desconectado de Gmail, esperando 5 segundos...");
             try {
-                Thread.sleep(3000); // Esperar 30 segundos entre verificaciones
+                Thread.sleep(5000); // Esperar 30 segundos entre verificaciones
             } catch (InterruptedException ex) {
                 Logger.getLogger(EmailReceipt.class.getName()).log(Level.SEVERE, null, ex);
             }

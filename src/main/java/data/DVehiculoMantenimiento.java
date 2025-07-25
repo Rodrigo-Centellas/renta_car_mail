@@ -31,7 +31,7 @@ public class DVehiculoMantenimiento {
 
     public List<String[]> get(int id) throws SQLException {
         List<String[]> result = new ArrayList<>();
-        String sql = "SELECT * FROM \"VehiculoMantenimiento\" WHERE id = ?";
+        String sql = "SELECT * FROM \"vehiculo_mantenimientos\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -54,7 +54,7 @@ public class DVehiculoMantenimiento {
                                String monto,
                                int vehiculoId,
                                int mantenimientoId) throws SQLException {
-        String sql = "INSERT INTO \"VehiculoMantenimiento\" "
+        String sql = "INSERT INTO \"vehiculo_mantenimientos\" "
                 + "(fecha, monto, vehiculo_id, mantenimiento_id) "
                 + "VALUES (?, ?, ?, ?) RETURNING id";
         try (Connection conn = connection.connect();
@@ -70,7 +70,7 @@ public class DVehiculoMantenimiento {
                 }
             }
         }
-        throw new SQLException("Error al insertar VehiculoMantenimiento.");
+        throw new SQLException("Error al insertar vehiculo_mantenimientos.");
     }
 
     public List<String[]> update(int id,
@@ -78,7 +78,7 @@ public class DVehiculoMantenimiento {
                                  String monto,
                                  int vehiculoId,
                                  int mantenimientoId) throws SQLException {
-        String sql = "UPDATE \"VehiculoMantenimiento\" SET "
+        String sql = "UPDATE \"vehiculo_mantenimientos\" SET "
                 + "fecha = ?, monto = ?, vehiculo_id = ?, mantenimiento_id = ? "
                 + "WHERE id = ?";
         try (Connection conn = connection.connect();
@@ -89,7 +89,7 @@ public class DVehiculoMantenimiento {
             ps.setInt(4, mantenimientoId);
             ps.setInt(5, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al actualizar VehiculoMantenimiento.");
+                throw new SQLException("Error al actualizar vehiculo_mantenimientos.");
             }
         }
         return get(id);
@@ -97,12 +97,12 @@ public class DVehiculoMantenimiento {
 
     public List<String[]> delete(int id) throws SQLException {
         //List<String[]> remaining = list();
-        String sql = "DELETE FROM \"VehiculoMantenimiento\" WHERE id = ?";
+        String sql = "DELETE FROM \"vehiculo_mantenimientos\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al eliminar VehiculoMantenimiento.");
+                throw new SQLException("Error al eliminar vehiculo_mantenimientos.");
             }
         }
         return list();
@@ -110,7 +110,7 @@ public class DVehiculoMantenimiento {
 
     public List<String[]> list() throws SQLException {
         List<String[]> list = new ArrayList<>();
-        String sql = "SELECT * FROM \"VehiculoMantenimiento\"";
+        String sql = "SELECT * FROM \"vehiculo_mantenimientos\"";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {

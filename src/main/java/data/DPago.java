@@ -15,9 +15,10 @@ import postgresConecction.SqlConnection;
 
 public class DPago {
 
+    // HEADERS reordenados según el orden de la base de datos
     public static final String[] HEADERS = {
             "id", "desde", "fecha", "hasta", "estado",
-            "monto", "tipo_pago", "pagofacil_transaction_id", "reserva_id"
+            "pagofacil_transaction_id", "monto", "tipo_pago", "reserva_id"
     };
 
     private final SqlConnection connection;
@@ -35,7 +36,7 @@ public class DPago {
     /** Recupera un pago por su ID */
     public List<String[]> get(int id) throws SQLException {
         List<String[]> result = new ArrayList<>();
-        String sql = "SELECT * FROM \"Pago\" WHERE id = ?";
+        String sql = "SELECT * FROM pagos WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -47,11 +48,11 @@ public class DPago {
                             rs.getDate("fecha").toString(),
                             rs.getDate("hasta").toString(),
                             rs.getString("estado"),
-                            String.valueOf(rs.getFloat("monto")),
-                            rs.getString("tipo_pago"),
                             rs.getObject("pagofacil_transaction_id") != null
                                     ? rs.getString("pagofacil_transaction_id")
                                     : "",
+                            String.valueOf(rs.getFloat("monto")),
+                            rs.getString("tipo_pago"),
                             rs.getObject("reserva_id") != null
                                     ? String.valueOf(rs.getInt("reserva_id"))
                                     : ""
@@ -65,7 +66,7 @@ public class DPago {
     /** Lista todos los pagos */
     public List<String[]> list() throws SQLException {
         List<String[]> list = new ArrayList<>();
-        String sql = "SELECT * FROM \"Pago\"";
+        String sql = "SELECT * FROM pagos";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -76,11 +77,11 @@ public class DPago {
                         rs.getDate("fecha").toString(),
                         rs.getDate("hasta").toString(),
                         rs.getString("estado"),
-                        String.valueOf(rs.getFloat("monto")),
-                        rs.getString("tipo_pago"),
                         rs.getObject("pagofacil_transaction_id") != null
                                 ? rs.getString("pagofacil_transaction_id")
                                 : "",
+                        String.valueOf(rs.getFloat("monto")),
+                        rs.getString("tipo_pago"),
                         rs.getObject("reserva_id") != null
                                 ? String.valueOf(rs.getInt("reserva_id"))
                                 : ""
@@ -105,8 +106,8 @@ public class DPago {
             float montoCalc = 0f;
             if (reservaId != null) {
                 String q = "SELECT v.precio_dia "
-                        + "FROM \"Reserva\" rv "
-                        + " JOIN \"Vehiculo\" v ON v.id = rv.vehiculo_id "
+                        + "FROM reservas rv "
+                        + " JOIN vehiculos v ON v.id = rv.vehiculo_id "
                         + "WHERE rv.id = ? LIMIT 1";
                 try (PreparedStatement ps1 = conn.prepareStatement(q)) {
                     ps1.setInt(1, reservaId);
@@ -129,7 +130,7 @@ public class DPago {
             }
 
             // 2) Insertar pago
-            String ins = "INSERT INTO \"Pago\" "
+            String ins = "INSERT INTO pagos "
                     + "(desde, fecha, hasta, estado, monto, tipo_pago, pagofacil_transaction_id, reserva_id) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
             int newId;
@@ -160,7 +161,7 @@ public class DPago {
 
             // 3) Marcar reserva como pagada
             if (reservaId != null) {
-                String upd = "UPDATE \"Reserva\" SET estado = 'pagado' WHERE id = ?";
+                String upd = "UPDATE reservas SET estado = 'pagado' WHERE id = ?";
                 try (PreparedStatement ps3 = conn.prepareStatement(upd)) {
                     ps3.setInt(1, reservaId);
                     ps3.executeUpdate();
@@ -188,8 +189,8 @@ public class DPago {
             float montoCalc = 0f;
             if (reservaId != null) {
                 String q = "SELECT v.precio_dia "
-                        + "FROM \"Reserva\" rv "
-                        + " JOIN \"Vehiculo\" v ON v.id = rv.vehiculo_id "
+                        + "FROM reservas rv "
+                        + " JOIN vehiculos v ON v.id = rv.vehiculo_id "
                         + "WHERE rv.id = ? LIMIT 1";
                 try (PreparedStatement ps1 = conn.prepareStatement(q)) {
                     ps1.setInt(1, reservaId);
@@ -212,7 +213,7 @@ public class DPago {
             }
 
             // Update
-            String up = "UPDATE \"Pago\" SET "
+            String up = "UPDATE pagos SET "
                     + "desde = ?, fecha = ?, hasta = ?, "
                     + "estado = ?, monto = ?, tipo_pago = ?, pagofacil_transaction_id = ?, reserva_id = ? "
                     + "WHERE id = ?";
@@ -241,7 +242,7 @@ public class DPago {
 
             // Marcar reserva
             if (reservaId != null) {
-                String upd2 = "UPDATE \"Reserva\" SET estado = 'pagado' WHERE id = ?";
+                String upd2 = "UPDATE reservas SET estado = 'pagado' WHERE id = ?";
                 try (PreparedStatement ps3 = conn.prepareStatement(upd2)) {
                     ps3.setInt(1, reservaId);
                     ps3.executeUpdate();
@@ -254,12 +255,12 @@ public class DPago {
 
     /** Elimina un pago */
     public List<String[]> delete(int id) throws SQLException {
-        String sql = "DELETE FROM \"Pago\" WHERE id = ?";
+        String sql = "DELETE FROM pagos WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al eliminar Pago.");
+                throw new SQLException("Error al eliminar pago.");
             }
         }
         return list();

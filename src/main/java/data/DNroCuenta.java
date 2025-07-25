@@ -12,7 +12,7 @@ import postgresConecction.SqlConnection;
 
 public class DNroCuenta {
 
-    public static final String[] HEADERS = {"id", "banco", "nro_cuenta"};
+    public static final String[] HEADERS = {"id", "banco", "nro_cuenta", "es_activa"};
 
     private final SqlConnection connection;
 
@@ -28,7 +28,7 @@ public class DNroCuenta {
 
     public List<String[]> get(int id) throws SQLException {
         List<String[]> resultado = new ArrayList<>();
-        String query = "SELECT * FROM \"NroCuenta\" WHERE id = ?";
+        String query = "SELECT * FROM nro_cuentas WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
@@ -37,7 +37,8 @@ public class DNroCuenta {
                     resultado.add(new String[]{
                             String.valueOf(rs.getInt("id")),
                             rs.getString("banco"),
-                            String.valueOf(rs.getInt("nro_cuenta"))
+                            String.valueOf(rs.getInt("nro_cuenta")),
+                            String.valueOf(rs.getBoolean("es_activa"))
                     });
                 }
             }
@@ -45,12 +46,13 @@ public class DNroCuenta {
         return resultado;
     }
 
-    public List<String[]> save(String banco, int nroCuenta) throws SQLException {
-        String query = "INSERT INTO \"NroCuenta\" (banco, nro_cuenta) VALUES (?, ?) RETURNING id";
+    public List<String[]> save(String banco, int nroCuenta, boolean esActiva) throws SQLException {
+        String query = "INSERT INTO nro_cuentas (banco, nro_cuenta, es_activa) VALUES (?, ?, ?) RETURNING id";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, banco);
             ps.setInt(2, nroCuenta);
+            ps.setBoolean(3, esActiva);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     int newId = rs.getInt(1);
@@ -61,13 +63,14 @@ public class DNroCuenta {
         throw new SQLException("Error al insertar NroCuenta.");
     }
 
-    public List<String[]> update(int id, String banco, int nroCuenta) throws SQLException {
-        String query = "UPDATE \"NroCuenta\" SET banco = ?, nro_cuenta = ? WHERE id = ?";
+    public List<String[]> update(int id, String banco, int nroCuenta, boolean esActiva) throws SQLException {
+        String query = "UPDATE nro_cuentas SET banco = ?, nro_cuenta = ?, es_activa = ? WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, banco);
             ps.setInt(2, nroCuenta);
-            ps.setInt(3, id);
+            ps.setBoolean(3, esActiva);
+            ps.setInt(4, id);
             if (ps.executeUpdate() == 0) {
                 throw new SQLException("Error al actualizar NroCuenta.");
             }
@@ -76,8 +79,7 @@ public class DNroCuenta {
     }
 
     public List<String[]> delete(int id) throws SQLException {
-        //List<String[]> restantes = list();
-        String query = "DELETE FROM \"NroCuenta\" WHERE id = ?";
+        String query = "DELETE FROM nro_cuentas WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
@@ -90,7 +92,7 @@ public class DNroCuenta {
 
     public List<String[]> list() throws SQLException {
         List<String[]> lista = new ArrayList<>();
-        String query = "SELECT * FROM \"NroCuenta\"";
+        String query = "SELECT * FROM nro_cuentas";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
@@ -98,7 +100,8 @@ public class DNroCuenta {
                 lista.add(new String[]{
                         String.valueOf(rs.getInt("id")),
                         rs.getString("banco"),
-                        String.valueOf(rs.getInt("nro_cuenta"))
+                        String.valueOf(rs.getInt("nro_cuenta")),
+                        String.valueOf(rs.getBoolean("es_activa"))
                 });
             }
         }

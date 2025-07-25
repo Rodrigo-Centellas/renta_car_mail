@@ -31,7 +31,7 @@ public class DNotificacion {
 
     public List<String[]> get(int id) throws SQLException {
         List<String[]> result = new ArrayList<>();
-        String sql = "SELECT * FROM \"Notificacion\" WHERE id = ?";
+        String sql = "SELECT * FROM \"notificacions\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -54,7 +54,7 @@ public class DNotificacion {
                                String mensaje,
                                String tipo,
                                int userId) throws SQLException {
-        String sql = "INSERT INTO \"Notificacion\" (fecha, mensaje, tipo, user_id) "
+        String sql = "INSERT INTO \"notificacions\" (fecha, mensaje, tipo, user_id) "
                 + "VALUES (?, ?, ?, ?) RETURNING id";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -69,7 +69,7 @@ public class DNotificacion {
                 }
             }
         }
-        throw new SQLException("Error al insertar Notificacion.");
+        throw new SQLException("Error al insertar notificacions.");
     }
 
     public List<String[]> update(int id,
@@ -77,7 +77,7 @@ public class DNotificacion {
                                  String mensaje,
                                  String tipo,
                                  int userId) throws SQLException {
-        String sql = "UPDATE \"Notificacion\" SET fecha = ?, mensaje = ?, tipo = ?, user_id = ? WHERE id = ?";
+        String sql = "UPDATE \"notificacions\" SET fecha = ?, mensaje = ?, tipo = ?, user_id = ? WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setDate(1, fecha);
@@ -86,7 +86,7 @@ public class DNotificacion {
             ps.setInt(4, userId);
             ps.setInt(5, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al actualizar Notificacion.");
+                throw new SQLException("Error al actualizar notificacions.");
             }
         }
         return get(id);
@@ -94,12 +94,12 @@ public class DNotificacion {
 
     public List<String[]> delete(int id) throws SQLException {
         //List<String[]> remaining = list();
-        String sql = "DELETE FROM \"Notificacion\" WHERE id = ?";
+        String sql = "DELETE FROM \"notificacions\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al eliminar Notificacion.");
+                throw new SQLException("Error al eliminar notificacions.");
             }
         }
         return list();
@@ -107,7 +107,7 @@ public class DNotificacion {
 
     public List<String[]> list() throws SQLException {
         List<String[]> list = new ArrayList<>();
-        String sql = "SELECT * FROM \"Notificacion\"";
+        String sql = "SELECT * FROM \"notificacions\"";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {

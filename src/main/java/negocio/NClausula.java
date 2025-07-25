@@ -25,14 +25,16 @@ public class NClausula {
     public List<String[]> save(List<String> params) throws SQLException {
         // params.get(0) = descripcion
         String descripcion = params.get(0);
-        return dClausula.save(descripcion);
+        String activa = params.get(1);
+        return dClausula.save(descripcion,activa);
     }
 
     public List<String[]> update(List<String> params) throws SQLException {
         // params.get(0) = id, params.get(1) = descripcion
         int id = Integer.parseInt(params.get(0));
         String descripcion = params.get(1);
-        return dClausula.update(id, descripcion);
+        String activa = params.get(2);
+        return dClausula.update(id, descripcion,activa);
     }
 
     public List<String[]> delete(List<String> params) throws SQLException {

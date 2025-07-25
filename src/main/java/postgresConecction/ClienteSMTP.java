@@ -1,98 +1,150 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package postgresConecction;
 
-/**
- *
- 
- */
 import java.io.*;
 import java.net.*;
 
 public class ClienteSMTP {
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
         String servidor = "mail.tecnoweb.org.bo";
-        //String servidor="172.20.172.254";
         String user_receptor = "grupo20sa@tecnoweb.org.bo";
- String user_emisor = "evansbalcazar@uagrm.edu.bo";
-    String line;
-        String comando = "help get()";
+        String user_emisor = "evansbalcazar@uagrm.edu.bo";
+        String comando;
         int puerto = 25;
 
         try {
-            //se establece conexion abriendo un socket especificando el servidor y puerto SMTP
+            System.out.println("🔗 Conectando a " + servidor + ":" + puerto + "...");
             Socket socket = new Socket(servidor, puerto);
-            //recibimo la informacion
+            socket.setSoTimeout(30000); // Timeout de 30 segundos
+
             BufferedReader entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            //enviamos la informacion
             DataOutputStream salida = new DataOutputStream(socket.getOutputStream());
-            // Escribimos datos en el canal de salida establecido con el puerto del protocolo SMTP del servidor
-            if (socket != null && entrada != null && salida != null) {
-                System.out.println("S : " + entrada.readLine());
-                //HELO
-                comando = "HELO " + servidor + " \r\n";
-                System.out.print("C : " + comando);
-                salida.writeBytes(comando);
-                System.out.println("S : " + getMultiline(entrada));
-                //MAIL FROM:
-                comando = "MAIL FROM: " + user_emisor + " \r\n";
-                System.out.print("C : " + comando);
-                salida.writeBytes(comando);
-                System.out.println("S : " + entrada.readLine());    
-                //RCPT TO:
-                comando = "RCPT TO: " + user_receptor + " \r\n";
-                System.out.print("C : " + comando);
-                salida.writeBytes(comando);
-                System.out.println("S : " + entrada.readLine());
-                //DATA
-                comando = "DATA \r\n";
-                System.out.print("C : " + comando);
-                salida.writeBytes(comando);
-                System.out.println("S : " + getMultiline(entrada));
-//
-                comando = "Subject:help get (). \r\n";
-                System.out.print("C : " + comando);
-                salida.writeBytes(comando);
-                System.out.println("S : " + entrada.readLine());
-//
-                comando = "QUIT\r\n";
-                System.out.print("C : " + comando);
-                salida.writeBytes(comando);
-                System.out.println("S : " + entrada.readLine());
+
+            // Leer saludo inicial del servidor
+            String respuestaInicial = entrada.readLine();
+            System.out.println("S: " + respuestaInicial);
+
+            if (respuestaInicial == null || !respuestaInicial.startsWith("220")) {
+                System.err.println("❌ Error: El servidor no respondió correctamente");
+                return;
             }
-            // Cerramos los flujos de salida y de entrada y el socket cliente
+
+            // HELO
+            comando = "HELO " + "cliente.test" + "\r\n";
+            System.out.print("C: " + comando);
+            salida.writeBytes(comando);
+            salida.flush();
+
+            String respuestaHelo = entrada.readLine();
+            System.out.println("S: " + respuestaHelo);
+
+            if (respuestaHelo == null || !respuestaHelo.startsWith("250")) {
+                System.err.println("❌ Error en HELO");
+                return;
+            }
+
+            // MAIL FROM
+            comando = "MAIL FROM:<" + user_emisor + ">\r\n";
+            System.out.print("C: " + comando);
+            salida.writeBytes(comando);
+            salida.flush();
+
+            String respuestaFrom = entrada.readLine();
+            System.out.println("S: " + respuestaFrom);
+
+            if (respuestaFrom == null || !respuestaFrom.startsWith("250")) {
+                System.err.println("❌ Error en MAIL FROM");
+                return;
+            }
+
+            // RCPT TO
+            comando = "RCPT TO:<" + user_receptor + ">\r\n";
+            System.out.print("C: " + comando);
+            salida.writeBytes(comando);
+            salida.flush();
+
+            String respuestaTo = entrada.readLine();
+            System.out.println("S: " + respuestaTo);
+
+            if (respuestaTo == null || !respuestaTo.startsWith("250")) {
+                System.err.println("❌ Error en RCPT TO");
+                return;
+            }
+
+            // DATA
+            comando = "DATA\r\n";
+            System.out.print("C: " + comando);
+            salida.writeBytes(comando);
+            salida.flush();
+
+            String respuestaData = entrada.readLine();
+            System.out.println("S: " + respuestaData);
+
+            if (respuestaData == null || !respuestaData.startsWith("354")) {
+                System.err.println("❌ Error en DATA");
+                return;
+            }
+
+            // MENSAJE COMPLETO
+            String mensaje = "From: " + user_emisor + "\r\n" +
+                    "To: " + user_receptor + "\r\n" +
+                    "Subject: help get()\r\n" +
+                    "\r\n" +
+                    "Comando de prueba desde SMTP.\r\n" +
+                    ".\r\n";
+
+            System.out.print("C: [enviando mensaje...]\n");
+            salida.writeBytes(mensaje);
+            salida.flush();
+
+            String respuestaMensaje = entrada.readLine();
+            System.out.println("S: " + respuestaMensaje);
+
+            // QUIT
+            comando = "QUIT\r\n";
+            System.out.print("C: " + comando);
+            salida.writeBytes(comando);
+            salida.flush();
+
+            String respuestaQuit = entrada.readLine();
+            System.out.println("S: " + respuestaQuit);
+
             salida.close();
             entrada.close();
             socket.close();
+
+            System.out.println("✅ Email enviado exitosamente!");
+
         } catch (UnknownHostException e) {
+            System.err.println("❌ No se puede conectar al servidor: " + servidor);
             e.printStackTrace();
-            System.out.println(" S : No se pudo conectar con el servidor indicado");
+        } catch (SocketTimeoutException e) {
+            System.err.println("❌ Timeout: El servidor no responde");
+            e.printStackTrace();
         } catch (IOException e) {
+            System.err.println("❌ Error de comunicación con el servidor");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("❌ Error inesperado");
             e.printStackTrace();
         }
     }
-//Permite Leer multiples lineas del Protocolo SMTP
 
     static protected String getMultiline(BufferedReader in) throws IOException {
         String lines = "";
-        while (true) {
-            String line = in.readLine();
-            if (line == null) {
-                // Server closed connection
-                throw new IOException(" S : Server unawares closed the connection.");
-            }
-            if (line.charAt(3) == ' ') {
-                lines = lines + "\n" + line;
-                // No more lines in the server response
+        String line;
+
+        while ((line = in.readLine()) != null) {
+            lines += "\n" + line;
+            if (line.length() >= 4 && line.charAt(3) == ' ') {
                 break;
             }
-            // Add read line to the list of lines
-            lines = lines + "\n" + line;
         }
+
+        if (line == null) {
+            throw new IOException("Server cerró conexión inesperadamente");
+        }
+
         return lines;
     }
 }

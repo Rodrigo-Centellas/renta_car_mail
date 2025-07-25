@@ -11,7 +11,7 @@ import postgresConecction.DBConnection;
 import postgresConecction.SqlConnection;
 
 public class DClausula {
-    public static final String[] HEADERS = {"id", "descripcion"};
+    public static final String[] HEADERS = {"id", "descripcion", "activa"};
 
     private final SqlConnection connection;
 
@@ -27,7 +27,7 @@ public class DClausula {
 
     public List<String[]> get(int id) throws SQLException {
         List<String[]> resultado = new ArrayList<>();
-        String query = "SELECT * FROM \"Clausula\" WHERE id = ?";
+        String query = "SELECT * FROM \"clausulas\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
@@ -35,7 +35,8 @@ public class DClausula {
                 if (rs.next()) {
                     resultado.add(new String[]{
                             String.valueOf(rs.getInt("id")),
-                            rs.getString("descripcion")
+                            rs.getString("descripcion"),
+                            rs.getString("activa")
                     });
                 }
             }
@@ -43,11 +44,12 @@ public class DClausula {
         return resultado;
     }
 
-    public List<String[]> save(String descripcion) throws SQLException {
-        String query = "INSERT INTO \"Clausula\" (descripcion) VALUES (?) RETURNING id";
+    public List<String[]> save(String descripcion,String activa) throws SQLException {
+        String query = "INSERT INTO \"clausulas\" (descripcion) VALUES (?) RETURNING id";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, descripcion);
+            ps.setString(2, activa);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     int newId = rs.getInt(1);
@@ -55,17 +57,18 @@ public class DClausula {
                 }
             }
         }
-        throw new SQLException("Error al insertar Clausula.");
+        throw new SQLException("Error al insertar clausulas.");
     }
 
-    public List<String[]> update(int id, String descripcion) throws SQLException {
-        String query = "UPDATE \"Clausula\" SET descripcion = ? WHERE id = ?";
+    public List<String[]> update(int id, String descripcion, String activa) throws SQLException {
+        String query = "UPDATE \"clausulas\" SET descripcion = ? WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, descripcion);
             ps.setInt(2, id);
+            ps.setString(3, activa);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al actualizar Clausula.");
+                throw new SQLException("Error al actualizar clausulas.");
             }
         }
         return get(id);
@@ -73,12 +76,12 @@ public class DClausula {
 
     public List<String[]> delete(int id) throws SQLException {
         //List<String[]> lista = list();
-        String query = "DELETE FROM \"Clausula\" WHERE id = ?";
+        String query = "DELETE FROM \"clausulas\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al eliminar Clausula.");
+                throw new SQLException("Error al eliminar clausulas.");
             }
         }
         return list();
@@ -86,14 +89,15 @@ public class DClausula {
 
     public List<String[]> list() throws SQLException {
         List<String[]> lista = new ArrayList<>();
-        String query = "SELECT * FROM \"Clausula\"";
+        String query = "SELECT * FROM \"clausulas\"";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 lista.add(new String[]{
                         String.valueOf(rs.getInt("id")),
-                        rs.getString("descripcion")
+                        rs.getString("descripcion"),
+                        rs.getString("activa")
                 });
             }
         }

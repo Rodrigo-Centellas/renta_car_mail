@@ -18,7 +18,7 @@ public class PostgresSqlConecction {
     public static void main(String[] args){
         try {
             SqlConnection sqlConnection = new SqlConnection("db_grupo20sa","mail.tecnoweb.org.bo","5432","grupo20sa", "grup020grup020*");
-            String query = "Select * from User";
+            String query = "Select * from roles";
             if(sqlConnection.connect() == null){
                 System.out.println("nula conexxion");
             }else{

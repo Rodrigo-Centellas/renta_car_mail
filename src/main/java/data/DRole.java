@@ -28,7 +28,7 @@ public class DRole {
 
     public List<String[]> get(int id) throws SQLException {
         List<String[]> resultado = new ArrayList<>();
-        String query = "SELECT * FROM \"Role\" WHERE id = ?";
+        String query = "SELECT * FROM \"roles\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
@@ -45,7 +45,7 @@ public class DRole {
     }
 
     public List<String[]> save(String nombre) throws SQLException {
-        String query = "INSERT INTO \"Role\" (nombre) VALUES (?) RETURNING id";
+        String query = "INSERT INTO \"roles\" (nombre) VALUES (?) RETURNING id";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, nombre);
@@ -56,17 +56,17 @@ public class DRole {
                 }
             }
         }
-        throw new SQLException("Error al insertar Role.");
+        throw new SQLException("Error al insertar roles.");
     }
 
     public List<String[]> update(int id, String nombre) throws SQLException {
-        String query = "UPDATE \"Role\" SET nombre = ? WHERE id = ?";
+        String query = "UPDATE \"roles\" SET nombre = ? WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, nombre);
             ps.setInt(2, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al actualizar Role.");
+                throw new SQLException("Error al actualizar roles.");
             }
         }
         return get(id);
@@ -74,12 +74,12 @@ public class DRole {
 
     public List<String[]> delete(int id) throws SQLException {
         //List<String[]> restantes = list();
-        String query = "DELETE FROM \"Role\" WHERE id = ?";
+        String query = "DELETE FROM \"roles\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al eliminar Role.");
+                throw new SQLException("Error al eliminar roles.");
             }
         }
         return list();
@@ -87,7 +87,7 @@ public class DRole {
 
     public List<String[]> list() throws SQLException {
         List<String[]> lista = new ArrayList<>();
-        String query = "SELECT * FROM \"Role\"";
+        String query = "SELECT * FROM \"roles\"";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {

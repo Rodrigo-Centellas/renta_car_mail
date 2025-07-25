@@ -13,9 +13,10 @@ import postgresConecction.SqlConnection;
 
 public class DVehiculo {
 
+    // HEADERS reordenados según el orden de la base de datos
     public static final String[] HEADERS = {
-            "id", "estado", "marca", "modelo", "monto_garantia",
-            "placa", "precio_dia", "tipo", "url_foto"
+            "id", "placa", "marca", "modelo", "url_imagen",
+            "estado", "monto_garantia", "precio_dia", "tipo"
     };
 
     private final SqlConnection connection;
@@ -33,20 +34,20 @@ public class DVehiculo {
     private String[] mapRow(ResultSet rs) throws SQLException {
         return new String[]{
                 String.valueOf(rs.getInt("id")),
-                rs.getString("estado"),
+                rs.getString("placa"),
                 rs.getString("marca"),
                 rs.getString("modelo"),
+                rs.getString("url_imagen"),
+                rs.getString("estado"),
                 String.valueOf(rs.getFloat("monto_garantia")),
-                rs.getString("placa"),
                 String.valueOf(rs.getFloat("precio_dia")),
-                rs.getString("tipo"),
-                rs.getString("url_foto")
+                rs.getString("tipo")
         };
     }
 
     public List<String[]> get(int id) throws SQLException {
         List<String[]> resultado = new ArrayList<>();
-        String query = "SELECT * FROM \"Vehiculo\" WHERE id = ?";
+        String query = "SELECT * FROM vehiculos WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
@@ -66,9 +67,9 @@ public class DVehiculo {
                                String placa,
                                float precioDia,
                                String tipo,
-                               String urlFoto) throws SQLException {
-        String query = "INSERT INTO \"Vehiculo\" " +
-                "(estado, marca, modelo, monto_garantia, placa, precio_dia, tipo, url_foto) " +
+                               String urlImagen) throws SQLException {
+        String query = "INSERT INTO vehiculos " +
+                "(estado, marca, modelo, monto_garantia, placa, precio_dia, tipo, url_imagen) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -79,7 +80,7 @@ public class DVehiculo {
             ps.setString(5, placa);
             ps.setFloat(6, precioDia);
             ps.setString(7, tipo);
-            ps.setString(8, urlFoto);
+            ps.setString(8, urlImagen);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     int newId = rs.getInt(1);
@@ -87,7 +88,7 @@ public class DVehiculo {
                 }
             }
         }
-        throw new SQLException("Error al insertar Vehiculo.");
+        throw new SQLException("Error al insertar vehículo.");
     }
 
     public List<String[]> update(int id,
@@ -98,9 +99,9 @@ public class DVehiculo {
                                  String placa,
                                  float precioDia,
                                  String tipo,
-                                 String urlFoto) throws SQLException {
-        String query = "UPDATE \"Vehiculo\" SET " +
-                "estado = ?, marca = ?, modelo = ?, monto_garantia = ?, placa = ?, precio_dia = ?, tipo = ?, url_foto = ? " +
+                                 String urlImagen) throws SQLException {
+        String query = "UPDATE vehiculos SET " +
+                "estado = ?, marca = ?, modelo = ?, monto_garantia = ?, placa = ?, precio_dia = ?, tipo = ?, url_imagen = ? " +
                 "WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -111,22 +112,22 @@ public class DVehiculo {
             ps.setString(5, placa);
             ps.setFloat(6, precioDia);
             ps.setString(7, tipo);
-            ps.setString(8, urlFoto);
+            ps.setString(8, urlImagen);
             ps.setInt(9, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al actualizar Vehiculo.");
+                throw new SQLException("Error al actualizar vehículo.");
             }
         }
         return get(id);
     }
 
     public List<String[]> delete(int id) throws SQLException {
-        String query = "DELETE FROM \"Vehiculo\" WHERE id = ?";
+        String query = "DELETE FROM vehiculos WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al eliminar Vehiculo.");
+                throw new SQLException("Error al eliminar vehículo.");
             }
         }
         return list();
@@ -134,7 +135,7 @@ public class DVehiculo {
 
     public List<String[]> list() throws SQLException {
         List<String[]> lista = new ArrayList<>();
-        String query = "SELECT * FROM \"Vehiculo\"";
+        String query = "SELECT * FROM vehiculos";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
