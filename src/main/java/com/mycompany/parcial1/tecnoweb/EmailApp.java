@@ -40,7 +40,6 @@ public class EmailApp implements ICasoUsoListener, IEmailListener {
     private NVehiculoMantenimiento nVehiculoMantenimiento;
     private EmailReceipt emailReceipt;
     private NContratoClausula nContratoClausula;
-    private NReservaVehiculo nReservaVehiculo;
     private final NReporteIngresos nReporte;
     private NNotificacion nNotificacion;
     private NContrato nContrato;
@@ -48,6 +47,7 @@ public class EmailApp implements ICasoUsoListener, IEmailListener {
     private NUserContrato nUserContrato;
     private NReserva nReserva;
     private NPago nPago;
+    private NUserHasRole nUserHasRole;
 
 
 
@@ -65,7 +65,7 @@ public class EmailApp implements ICasoUsoListener, IEmailListener {
         this.nGarante = new NGarante();
         this.nVehiculoMantenimiento = new NVehiculoMantenimiento();
         this.nContratoClausula = new NContratoClausula();
-        this.nReservaVehiculo = new NReservaVehiculo();
+
         this.nNotificacion = new NNotificacion();
         this.nContrato = new NContrato();
         this.nContratoPago = new NContratoPago();
@@ -73,6 +73,7 @@ public class EmailApp implements ICasoUsoListener, IEmailListener {
         this.nReserva = new NReserva();
         this.nPago = new NPago();
         this.nReporte = new NReporteIngresos();
+        this.nUserHasRole = new NUserHasRole();
     }
 
     public void start() {
@@ -82,6 +83,80 @@ public class EmailApp implements ICasoUsoListener, IEmailListener {
     }
 
 
+    @Override
+    public void userHasRole(ParamsAction event) {
+        try {
+            switch (event.getAction()) {
+                case Token.ADD:
+                    List<String[]> created = nUserHasRole.save(event.getParams());
+                    tableNotifySuccess(
+                            event.getSender(),
+                            "UserHasRole creado correctamente",
+                            DUserHasRole.HEADERS,
+                            (ArrayList<String[]>) created,
+                            event.getCommand()
+                    );
+                    break;
+
+                case Token.GET:
+                    if (event.getParams() != null && !event.getParams().isEmpty()) {
+                        // Get by ID
+                        int id = Integer.parseInt(event.getParams().get(0));
+                        List<String[]> single = nUserHasRole.get(id);
+                        tableNotifySuccess(
+                                event.getSender(),
+                                "Detalle de UserHasRole",
+                                DUserHasRole.HEADERS,
+                                (ArrayList<String[]>) single,
+                                event.getCommand()
+                        );
+                    } else {
+                        // List all
+                        List<String[]> all = nUserHasRole.list();
+                        tableNotifySuccess(
+                                event.getSender(),
+                                "Lista de UserHasRole",
+                                DUserHasRole.HEADERS,
+                                (ArrayList<String[]>) all,
+                                event.getCommand()
+                        );
+                    }
+                    break;
+
+                case Token.MODIFY:
+                    List<String[]> updated = nUserHasRole.update(event.getParams());
+                    tableNotifySuccess(
+                            event.getSender(),
+                            "UserHasRole actualizado correctamente",
+                            DUserHasRole.HEADERS,
+                            (ArrayList<String[]>) updated,
+                            event.getCommand()
+                    );
+                    break;
+
+                case Token.DELETE:
+                    List<String[]> remaining = nUserHasRole.delete(event.getParams());
+                    tableNotifySuccess(
+                            event.getSender(),
+                            "UserHasRole eliminado correctamente",
+                            DUserHasRole.HEADERS,
+                            (ArrayList<String[]>) remaining,
+                            event.getCommand()
+                    );
+                    break;
+
+                default:
+                    simpleNotify(event.getSender(), "Error", "Acción no válida para userHasRole.");
+                    break;
+            }
+        } catch (Exception ex) {
+            handleError(
+                    CONSTRAINTS_ERROR,
+                    event.getSender(),
+                    Collections.singletonList("Error al procesar userHasRole: " + ex.getMessage())
+            );
+        }
+    }
     @Override
     public void reporte(ParamsAction event) {
         try {
@@ -541,72 +616,6 @@ public class EmailApp implements ICasoUsoListener, IEmailListener {
     }
 
 
-    @Override
-    public void reservaVehiculo(ParamsAction event) {
-        try {
-            switch (event.getAction()) {
-                case Token.ADD:
-                    List<String[]> saved = nReservaVehiculo.save(event.getParams());
-                    tableNotifySuccess(
-                            event.getSender(),
-                            "Reserva_Vehiculo creada",
-                            DReservaVehiculo.HEADERS,
-                            (ArrayList<String[]>) saved,
-                            event.getCommand()
-                    );
-                    break;
-
-                case Token.GET:
-                    if (!event.getParams().isEmpty()) {
-                        int id = Integer.parseInt(event.getParams().get(0));
-                        tableNotifySuccess(
-                                event.getSender(),
-                                "Detalle Reserva_Vehiculo",
-                                DReservaVehiculo.HEADERS,
-                                (ArrayList<String[]>) nReservaVehiculo.get(id),
-                                event.getCommand()
-                        );
-                    } else {
-                        tableNotifySuccess(
-                                event.getSender(),
-                                "Lista Reserva_Vehiculo",
-                                DReservaVehiculo.HEADERS,
-                                nReservaVehiculo.list(),
-                                event.getCommand()
-                        );
-                    }
-                    break;
-
-                case Token.MODIFY:
-                    List<String[]> upd = nReservaVehiculo.update(event.getParams());
-                    tableNotifySuccess(
-                            event.getSender(),
-                            "Reserva_Vehiculo actualizada",
-                            DReservaVehiculo.HEADERS,
-                            (ArrayList<String[]>) upd,
-                            event.getCommand()
-                    );
-                    break;
-
-                case Token.DELETE:
-                    List<String[]> rem = nReservaVehiculo.delete(event.getParams());
-                    tableNotifySuccess(
-                            event.getSender(),
-                            "Reserva_Vehiculo eliminada",
-                            DReservaVehiculo.HEADERS,
-                            (ArrayList<String[]>) rem,
-                            event.getCommand()
-                    );
-                    break;
-            }
-        } catch (Exception ex) {
-            handleError(
-                    CONSTRAINTS_ERROR,
-                    event.getSender(),
-                    Collections.singletonList("Error: " + ex.getMessage())
-            );
-        }
-    }
 
     @Override
     public void contratoClausula(ParamsAction event) {

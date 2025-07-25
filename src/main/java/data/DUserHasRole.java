@@ -1,25 +1,23 @@
-// File: data/DReservaVehiculo.java
+// File: data/DUserHasRole.java
 package data;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import postgresConecction.DBConnection;
 import postgresConecction.SqlConnection;
 
-public class DReservaVehiculo {
+public class DUserHasRole {
 
-    public static final String[] HEADERS = {
-            "id", "fecha", "reserva_id", "vehiculo_id"
-    };
+    public static final String[] HEADERS = { "id", "user_id", "role_id" };
 
     private final SqlConnection connection;
 
-    public DReservaVehiculo() {
+    public DUserHasRole() {
         this.connection = new SqlConnection(
                 DBConnection.database,
                 DBConnection.server,
@@ -30,35 +28,30 @@ public class DReservaVehiculo {
     }
 
     public List<String[]> get(int id) throws SQLException {
-        List<String[]> result = new ArrayList<>();
-        String sql = "SELECT * FROM \"Reserva_vehiculo\" WHERE id = ?";
+        List<String[]> resultado = new ArrayList<>();
+        String sql = "SELECT * FROM \"UserHasRole\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    result.add(new String[]{
+                    resultado.add(new String[]{
                             String.valueOf(rs.getInt("id")),
-                            rs.getDate("fecha").toString(),
-                            String.valueOf(rs.getInt("reserva_id")),
-                            String.valueOf(rs.getInt("vehiculo_id"))
+                            String.valueOf(rs.getInt("user_id")),
+                            String.valueOf(rs.getInt("role_id"))
                     });
                 }
             }
         }
-        return result;
+        return resultado;
     }
 
-    public List<String[]> save(Date fecha,
-                               int reservaId,
-                               int vehiculoId) throws SQLException {
-        String sql = "INSERT INTO \"Reserva_vehiculo\" (fecha, reserva_id, vehiculo_id) "
-                + "VALUES (?, ?, ?) RETURNING id";
+    public List<String[]> save(int userId, int roleId) throws SQLException {
+        String sql = "INSERT INTO \"UserHasRole\" (user_id, role_id) VALUES (?, ?) RETURNING id";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setDate(1, fecha);
-            ps.setInt(2, reservaId);
-            ps.setInt(3, vehiculoId);
+            ps.setInt(1, userId);
+            ps.setInt(2, roleId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     int newId = rs.getInt(1);
@@ -66,35 +59,30 @@ public class DReservaVehiculo {
                 }
             }
         }
-        throw new SQLException("Error al insertar Reserva_vehiculo.");
+        throw new SQLException("Error al insertar UserHasRole.");
     }
 
-    public List<String[]> update(int id,
-                                 Date fecha,
-                                 int reservaId,
-                                 int vehiculoId) throws SQLException {
-        String sql = "UPDATE \"Reserva_vehiculo\" SET fecha = ?, reserva_id = ?, vehiculo_id = ? WHERE id = ?";
+    public List<String[]> update(int id, int userId, int roleId) throws SQLException {
+        String sql = "UPDATE \"UserHasRole\" SET user_id = ?, role_id = ? WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setDate(1, fecha);
-            ps.setInt(2, reservaId);
-            ps.setInt(3, vehiculoId);
-            ps.setInt(4, id);
+            ps.setInt(1, userId);
+            ps.setInt(2, roleId);
+            ps.setInt(3, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al actualizar Reserva_vehiculo.");
+                throw new SQLException("Error al actualizar UserHasRole.");
             }
         }
         return get(id);
     }
 
     public List<String[]> delete(int id) throws SQLException {
-        //List<String[]> remaining = list();
-        String sql = "DELETE FROM \"Reserva_vehiculo\" WHERE id = ?";
+        String sql = "DELETE FROM \"UserHasRole\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             if (ps.executeUpdate() == 0) {
-                throw new SQLException("Error al eliminar Reserva_vehiculo.");
+                throw new SQLException("Error al eliminar UserHasRole.");
             }
         }
         return list();
@@ -102,16 +90,15 @@ public class DReservaVehiculo {
 
     public List<String[]> list() throws SQLException {
         List<String[]> lista = new ArrayList<>();
-        String sql = "SELECT * FROM \"Reserva_vehiculo\"";
+        String sql = "SELECT * FROM \"UserHasRole\"";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 lista.add(new String[]{
                         String.valueOf(rs.getInt("id")),
-                        rs.getDate("fecha").toString(),
-                        String.valueOf(rs.getInt("reserva_id")),
-                        String.valueOf(rs.getInt("vehiculo_id"))
+                        String.valueOf(rs.getInt("user_id")),
+                        String.valueOf(rs.getInt("role_id"))
                 });
             }
         }

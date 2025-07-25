@@ -16,7 +16,8 @@ import postgresConecction.SqlConnection;
 public class DPago {
 
     public static final String[] HEADERS = {
-            "id", "desde", "fecha", "hasta", "estado", "monto", "tipo_pago", "reserva_id"
+            "id", "desde", "fecha", "hasta", "estado",
+            "monto", "tipo_pago", "pagofacil_transaction_id", "reserva_id"
     };
 
     private final SqlConnection connection;
@@ -48,6 +49,9 @@ public class DPago {
                             rs.getString("estado"),
                             String.valueOf(rs.getFloat("monto")),
                             rs.getString("tipo_pago"),
+                            rs.getObject("pagofacil_transaction_id") != null
+                                    ? rs.getString("pagofacil_transaction_id")
+                                    : "",
                             rs.getObject("reserva_id") != null
                                     ? String.valueOf(rs.getInt("reserva_id"))
                                     : ""
@@ -74,6 +78,9 @@ public class DPago {
                         rs.getString("estado"),
                         String.valueOf(rs.getFloat("monto")),
                         rs.getString("tipo_pago"),
+                        rs.getObject("pagofacil_transaction_id") != null
+                                ? rs.getString("pagofacil_transaction_id")
+                                : "",
                         rs.getObject("reserva_id") != null
                                 ? String.valueOf(rs.getInt("reserva_id"))
                                 : ""
@@ -90,6 +97,7 @@ public class DPago {
             Date hasta,
             String estado,
             String tipoPago,
+            String pagofacilTransactionId,
             Integer reservaId
     ) throws SQLException {
         try (Connection conn = connection.connect()) {
@@ -99,7 +107,7 @@ public class DPago {
                 String q = "SELECT v.precio_dia "
                         + "FROM \"Reserva\" rv "
                         + " JOIN \"Vehiculo\" v ON v.id = rv.vehiculo_id "
-                        + "WHERE rv.id = ? LIMIT 1";      // CORRECCIÓN: rv.id en lugar de rv.reserva_id
+                        + "WHERE rv.id = ? LIMIT 1";
                 try (PreparedStatement ps1 = conn.prepareStatement(q)) {
                     ps1.setInt(1, reservaId);
                     try (ResultSet rs1 = ps1.executeQuery()) {
@@ -122,8 +130,8 @@ public class DPago {
 
             // 2) Insertar pago
             String ins = "INSERT INTO \"Pago\" "
-                    + "(desde, fecha, hasta, estado, monto, tipo_pago, reserva_id) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
+                    + "(desde, fecha, hasta, estado, monto, tipo_pago, pagofacil_transaction_id, reserva_id) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
             int newId;
             try (PreparedStatement ps2 = conn.prepareStatement(ins)) {
                 ps2.setDate(1, desde);
@@ -132,10 +140,15 @@ public class DPago {
                 ps2.setString(4, estado);
                 ps2.setFloat(5, montoCalc);
                 ps2.setString(6, tipoPago);
-                if (reservaId != null) {
-                    ps2.setInt(7, reservaId);
+                if (pagofacilTransactionId != null && !pagofacilTransactionId.isEmpty()) {
+                    ps2.setString(7, pagofacilTransactionId);
                 } else {
-                    ps2.setNull(7, Types.INTEGER);
+                    ps2.setNull(7, Types.VARCHAR);
+                }
+                if (reservaId != null) {
+                    ps2.setInt(8, reservaId);
+                } else {
+                    ps2.setNull(8, Types.INTEGER);
                 }
                 try (ResultSet rs2 = ps2.executeQuery()) {
                     if (!rs2.next()) {
@@ -167,6 +180,7 @@ public class DPago {
             Date hasta,
             String estado,
             String tipoPago,
+            String pagofacilTransactionId,
             Integer reservaId
     ) throws SQLException {
         try (Connection conn = connection.connect()) {
@@ -176,7 +190,7 @@ public class DPago {
                 String q = "SELECT v.precio_dia "
                         + "FROM \"Reserva\" rv "
                         + " JOIN \"Vehiculo\" v ON v.id = rv.vehiculo_id "
-                        + "WHERE rv.id = ? LIMIT 1";      // CORRECCIÓN: rv.id
+                        + "WHERE rv.id = ? LIMIT 1";
                 try (PreparedStatement ps1 = conn.prepareStatement(q)) {
                     ps1.setInt(1, reservaId);
                     try (ResultSet rs1 = ps1.executeQuery()) {
@@ -200,7 +214,7 @@ public class DPago {
             // Update
             String up = "UPDATE \"Pago\" SET "
                     + "desde = ?, fecha = ?, hasta = ?, "
-                    + "estado = ?, monto = ?, tipo_pago = ?, reserva_id = ? "
+                    + "estado = ?, monto = ?, tipo_pago = ?, pagofacil_transaction_id = ?, reserva_id = ? "
                     + "WHERE id = ?";
             try (PreparedStatement ps2 = conn.prepareStatement(up)) {
                 ps2.setDate(1, desde);
@@ -209,12 +223,17 @@ public class DPago {
                 ps2.setString(4, estado);
                 ps2.setFloat(5, montoCalc);
                 ps2.setString(6, tipoPago);
-                if (reservaId != null) {
-                    ps2.setInt(7, reservaId);
+                if (pagofacilTransactionId != null && !pagofacilTransactionId.isEmpty()) {
+                    ps2.setString(7, pagofacilTransactionId);
                 } else {
-                    ps2.setNull(7, Types.INTEGER);
+                    ps2.setNull(7, Types.VARCHAR);
                 }
-                ps2.setInt(8, id);
+                if (reservaId != null) {
+                    ps2.setInt(8, reservaId);
+                } else {
+                    ps2.setNull(8, Types.INTEGER);
+                }
+                ps2.setInt(9, id);
                 if (ps2.executeUpdate() == 0) {
                     throw new SQLException("Pago no encontrado: " + id);
                 }
@@ -235,7 +254,6 @@ public class DPago {
 
     /** Elimina un pago */
     public List<String[]> delete(int id) throws SQLException {
-        //List<String[]> remaining = list();
         String sql = "DELETE FROM \"Pago\" WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -245,5 +263,9 @@ public class DPago {
             }
         }
         return list();
+    }
+
+    public void disconnect() {
+        connection.closeConnection();
     }
 }

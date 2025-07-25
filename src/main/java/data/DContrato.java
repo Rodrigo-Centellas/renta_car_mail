@@ -20,7 +20,6 @@ public class DContrato {
             "fecha_fin",
             "frecuencia_pago_id",
             "nro_cuenta_id",
-            "garante_id",
             "vehiculo_id"
     };
 
@@ -51,7 +50,6 @@ public class DContrato {
                             rs.getDate("fecha_fin").toString(),
                             String.valueOf(rs.getInt("frecuencia_pago_id")),
                             String.valueOf(rs.getInt("nro_cuenta_id")),
-                            String.valueOf(rs.getInt("garante_id")),
                             String.valueOf(rs.getInt("vehiculo_id"))
                     });
                 }
@@ -65,10 +63,9 @@ public class DContrato {
                                Date fechaFin,
                                int frecuenciaPagoId,
                                int nroCuentaId,
-                               int garanteId,
                                int vehiculoId) throws SQLException {
         String sql = "INSERT INTO \"Contrato\" " +
-                "(estado, fecha_inicio, fecha_fin, frecuencia_pago_id, nro_cuenta_id, garante_id, vehiculo_id) " +
+                "(estado, fecha_inicio, fecha_fin, frecuencia_pago_id, nro_cuenta_id, vehiculo_id) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -77,8 +74,7 @@ public class DContrato {
             ps.setDate(3, fechaFin);
             ps.setInt(4, frecuenciaPagoId);
             ps.setInt(5, nroCuentaId);
-            ps.setInt(6, garanteId);
-            ps.setInt(7, vehiculoId);
+            ps.setInt(6, vehiculoId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     int newId = rs.getInt(1);
@@ -95,11 +91,10 @@ public class DContrato {
                                  Date fechaFin,
                                  int frecuenciaPagoId,
                                  int nroCuentaId,
-                                 int garanteId,
                                  int vehiculoId) throws SQLException {
         String sql = "UPDATE \"Contrato\" SET " +
                 "estado = ?, fecha_inicio = ?, fecha_fin = ?, " +
-                "frecuencia_pago_id = ?, nro_cuenta_id = ?, garante_id = ?, vehiculo_id = ? " +
+                "frecuencia_pago_id = ?, nro_cuenta_id = ? = ?, vehiculo_id = ? " +
                 "WHERE id = ?";
         try (Connection conn = connection.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -108,9 +103,8 @@ public class DContrato {
             ps.setDate(3, fechaFin);
             ps.setInt(4, frecuenciaPagoId);
             ps.setInt(5, nroCuentaId);
-            ps.setInt(6, garanteId);
-            ps.setInt(7, vehiculoId);
-            ps.setInt(8, id);
+            ps.setInt(6, vehiculoId);
+            ps.setInt(7, id);
             if (ps.executeUpdate() == 0) {
                 throw new SQLException("Error al actualizar Contrato.");
             }
@@ -145,7 +139,6 @@ public class DContrato {
                         rs.getDate("fecha_fin").toString(),
                         String.valueOf(rs.getInt("frecuencia_pago_id")),
                         String.valueOf(rs.getInt("nro_cuenta_id")),
-                        String.valueOf(rs.getInt("garante_id")),
                         String.valueOf(rs.getInt("vehiculo_id"))
                 });
             }

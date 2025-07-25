@@ -28,7 +28,7 @@ public class Token {
     public static final int GARANTE = 118;
     public static final int VEHICULOMANTENIMIENTO = 119;
     public static final int CONTRATO_CLAUSULA = 120;
-    public static final int RESERVA_VEHICULO = 121;
+
     public static final int USERRESERVA = 122;
     public static final int NOTIFICACION = 123;
     public static final int CONTRATO = 124;
@@ -37,6 +37,9 @@ public class Token {
 
     public static final int RESERVA = 127;// siguiente valor libre
     public static final int PAGO = 128;
+    public static final int USERHASROLE = 129;
+
+
 
     // Constantes para los títulos de casos de uso
     public static final int USUARIO = 100;
@@ -151,14 +154,14 @@ public class Token {
                 return "user";
             case VEHICULO:
                 return "vehiculo";
+            case USERHASROLE:
+                return "userhasrole";
             case GARANTE:
                 return "garante";
             case VEHICULOMANTENIMIENTO:
                 return "vehiculomantenimiento";
             case CONTRATO_CLAUSULA:
                 return "contratoclausula";
-            case RESERVA_VEHICULO:
-                return "reserva_vehiculo";
             case NOTIFICACION:
                 return "notificacion";
             case CONTRATO:
@@ -215,6 +218,8 @@ public class Token {
                 return FRECUENCIAPAGO;
             case "nrocuenta":
                 return NROCUENTA;
+            case "userhasrole":
+                return USERHASROLE;
             case "rol":
                 return ROL;
             case "clausula":
@@ -229,8 +234,6 @@ public class Token {
                 return VEHICULOMANTENIMIENTO;
             case "contratoclausula":
                 return CONTRATO_CLAUSULA;
-            case "reserva_vehiculo":
-                return RESERVA_VEHICULO;
             case "userreserva":
                 return USERRESERVA;
             case "notificacion":

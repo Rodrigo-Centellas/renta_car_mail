@@ -21,7 +21,6 @@ public interface ICasoUsoListener {
 
  void vehiculoMantenimiento(librerias.ParamsAction event);
  void contratoClausula(librerias.ParamsAction event);
- void reservaVehiculo(ParamsAction event);
 
  void notificacion(ParamsAction event);
  void contrato(ParamsAction event);
@@ -30,6 +29,7 @@ public interface ICasoUsoListener {
  void reserva(ParamsAction event);
  void pago(ParamsAction event);
  void reporte(ParamsAction event);
+ void userHasRole(ParamsAction event);
 
 
 }
