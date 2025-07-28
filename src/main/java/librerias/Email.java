@@ -67,11 +67,40 @@ public class Email {
         return new Email(getFrom(plain_text), getSubject(plain_text));
     }
 
+//    private static String getFrom(String plain_text) {
+//        String search = "Return-Path: <";
+//        int index_begin = plain_text.indexOf(search) + search.length();
+//        int index_end = plain_text.indexOf(">");
+//        return plain_text.substring(index_begin, index_end);
+//    }
+
+    // Corrección para librerias/Email.java
+
     private static String getFrom(String plain_text) {
         String search = "Return-Path: <";
-        int index_begin = plain_text.indexOf(search) + search.length();
-        int index_end = plain_text.indexOf(">");
-        return plain_text.substring(index_begin, index_end);
+        int index_begin = plain_text.indexOf(search);
+
+        if (index_begin == -1) {
+            return null; // No se encontró Return-Path
+        }
+
+        index_begin += search.length(); // Posición después de "Return-Path: <"
+
+        // Buscar el ">" MÁS CERCANO después del Return-Path, no el primero de todo el texto
+        int index_end = plain_text.indexOf(">", index_begin);
+
+        if (index_end == -1) {
+            return null; // No se encontró el cierre ">"
+        }
+
+        String email = plain_text.substring(index_begin, index_end).trim();
+
+        // Validación adicional: verificar que parece un email
+        if (email.contains("@") && email.length() > 3) {
+            return email;
+        }
+
+        return null;
     }
 
     private static String getSubject(String plain_text) {

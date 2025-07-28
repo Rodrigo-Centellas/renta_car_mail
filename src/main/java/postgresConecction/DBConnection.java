@@ -1,16 +1,16 @@
 package postgresConecction;
 
 public class DBConnection {
-//    public static String database = "db_grupo20sa";
-//    public static String server = "mail.tecnoweb.org.bo";
-//    public static String port = "5432";
-//    public static String user = "grupo20sa";
-//    public static String password ="grup020grup020*";
-//    public static String url = "jdbc:postgresql://" + server + ":" + port + "/" + database;
-    public static String database = "renta_car";
-    public static String server = "localhost";
+    public static String database = "db_grupo20sa";
+    public static String server = "mail.tecnoweb.org.bo";
     public static String port = "5432";
-    public static String user = "postgres";
-    public static String password ="baterias1";
+    public static String user = "grupo20sa";
+    public static String password ="grup020grup020*";
     public static String url = "jdbc:postgresql://" + server + ":" + port + "/" + database;
+//    public static String database = "renta_car";
+//    public static String server = "localhost";
+//    public static String port = "5432";
+//    public static String user = "postgres";
+//    public static String password ="baterias1";
+//    public static String url = "jdbc:postgresql://" + server + ":" + port + "/" + database;
 }
