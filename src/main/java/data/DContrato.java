@@ -126,10 +126,14 @@ public class DContrato {
                 }
 
                 // Verificar que el vehículo esté disponible
-                if (!"disponible".equalsIgnoreCase(estadoVehiculo)) {
-                    throw new SQLException("El vehículo con ID " + vehiculoId + " no está disponible. Estado actual: " + estadoVehiculo);
-                }
+                if (!"disponible".equalsIgnoreCase(estadoVehiculo) &&
+                        !"reservado".equalsIgnoreCase(estadoVehiculo)) {   // o "reservado"
 
+                    throw new SQLException(
+                            "El vehículo con ID " + vehiculoId +
+                                    " no está disponible para contrato. Estado actual: " + estadoVehiculo
+                    );
+                }
                 // 2. Actualizar el estado del vehículo a "alquilado"
                 String sqlUpdateVehiculo = "UPDATE \"vehiculos\" SET estado = 'alquilado' WHERE id = ?";
                 try (PreparedStatement psUpdateVehiculo = conn.prepareStatement(sqlUpdateVehiculo)) {
@@ -174,7 +178,7 @@ public class DContrato {
                     psPagoGarantia.setDate(1, fechaInicio);
                     psPagoGarantia.setDate(2, fechaInicio); // fecha de pago = fecha inicio
                     psPagoGarantia.setDate(3, fechaInicio);
-                    psPagoGarantia.setString(4, "PENDIENTE");
+                    psPagoGarantia.setString(4, "pendiente");
                     psPagoGarantia.setFloat(5, montoGarantia);
                     psPagoGarantia.setString(6, "garantia");
                     psPagoGarantia.setObject(7, null); // No está asociado a ninguna reserva
@@ -204,9 +208,9 @@ public class DContrato {
                         psPagoDiario.setDate(1, Date.valueOf(fechaActual));
                         psPagoDiario.setDate(2, Date.valueOf(fechaActual));
                         psPagoDiario.setDate(3, Date.valueOf(fechaActual));
-                        psPagoDiario.setString(4, "PENDIENTE");
+                        psPagoDiario.setString(4, "pendiente");
                         psPagoDiario.setFloat(5, precioDia);
-                        psPagoDiario.setString(6, "diario");
+                        psPagoDiario.setString(6, "contrato");
                         psPagoDiario.setObject(7, null); // No está asociado a ninguna reserva
                         psPagoDiario.setInt(8, contratoId); // ASIGNAR CONTRATO_ID
 

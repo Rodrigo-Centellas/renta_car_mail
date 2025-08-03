@@ -2,6 +2,7 @@
 package negocio;
 
 import data.DReserva;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,25 +25,24 @@ public class NReserva {
 
     /**
      * Crea una reserva y automáticamente un pago asociado.
-     * Parámetros: estado, vehiculo_id, user_id
+     * Parámetros: estado, vehiculo_id, user_id, fecha (YYYY-MM-DD)
      */
     public List<String[]> save(List<String> params) throws SQLException {
         String estado = params.get(0);
         int vehiculoId = Integer.parseInt(params.get(1));
         int userId = Integer.parseInt(params.get(2));
-        return dao.save(estado, vehiculoId, userId);
+        Date fecha = Date.valueOf(params.get(3));
+        return dao.save(estado, vehiculoId, userId, fecha);
     }
 
     /**
-     * Actualiza una reserva existente.
-     * Parámetros: id, estado, vehiculo_id, user_id
+     * Actualiza solo el estado de una reserva existente.
+     * Parámetros: id, estado
      */
     public List<String[]> update(List<String> params) throws SQLException {
         int id = Integer.parseInt(params.get(0));
         String estado = params.get(1);
-        int vehiculoId = Integer.parseInt(params.get(2));
-        int userId = Integer.parseInt(params.get(3));
-        return dao.update(id, estado, vehiculoId, userId);
+        return dao.update(id, estado);
     }
 
     public List<String[]> delete(List<String> params) throws SQLException {

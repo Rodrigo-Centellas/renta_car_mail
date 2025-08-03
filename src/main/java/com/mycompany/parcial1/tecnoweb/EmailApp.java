@@ -1211,7 +1211,7 @@ public class EmailApp implements ICasoUsoListener, IEmailListener {
                 data.add(new String[]{"USER", "user get() → Lista todos"});
                 data.add(new String[]{"USER", "user get(id) → Obtiene por ID"});
                 data.add(new String[]{"USER", "user add(apellido,ci,domicilio,nombre,telefono,email,password,doc_frontal_path,doc_trasero_path)"});
-                data.add(new String[]{"USER", "user modify(id,apellido,ci,domicilio,nombre,telefono,email,password,doc_frontal_path,doc_trasero_path)"});
+                data.add(new String[]{"USER", "user modify(id,apellido,ci,domicilio,nombre,telefono,email,password,doc_frontal_path,doc_trasero_path,verificado)"});
                 data.add(new String[]{"USER", "user delete(id)"});
 
                 // 🚗 VEHÍCULO
@@ -1220,13 +1220,6 @@ public class EmailApp implements ICasoUsoListener, IEmailListener {
                 data.add(new String[]{"VEHICULO", "vehiculo add(estado,marca,modelo,monto_garantia,placa,precio_dia,tipo,url_imagen)"});
                 data.add(new String[]{"VEHICULO", "vehiculo modify(id,estado,marca,modelo,monto_garantia,placa,precio_dia,tipo,url_imagen)"});
                 data.add(new String[]{"VEHICULO", "vehiculo delete(id)"});
-
-                // 🛡️ GARANTE
-                data.add(new String[]{"GARANTE", "garante get() → Lista todos"});
-                data.add(new String[]{"GARANTE", "garante get(id) → Obtiene por ID"});
-                data.add(new String[]{"GARANTE", "garante add(apellido,ci,domicilio,nombre,telefono)"});
-                data.add(new String[]{"GARANTE", "garante modify(id,apellido,ci,domicilio,nombre,telefono)"});
-                data.add(new String[]{"GARANTE", "garante delete(id)"});
 
                 // 🔧 MANTENIMIENTO
                 data.add(new String[]{"MANTENIMIENTO", "mantenimiento get() → Lista todos"});
@@ -1304,15 +1297,15 @@ public class EmailApp implements ICasoUsoListener, IEmailListener {
                 // 📅 RESERVA
                 data.add(new String[]{"RESERVA", "reserva get() → Lista todos"});
                 data.add(new String[]{"RESERVA", "reserva get(id) → Obtiene por ID"});
-                data.add(new String[]{"RESERVA", "reserva add(estado,vehiculo_id,user_id) → Crea pago automático"});
-                data.add(new String[]{"RESERVA", "reserva modify(id,estado,vehiculo_id,user_id)"});
+                data.add(new String[]{"RESERVA", "reserva add(estado,vehiculo_id,user_id,fecha) → Crea pago automático"});
+                data.add(new String[]{"RESERVA", "reserva modify(id,estado)"});
                 data.add(new String[]{"RESERVA", "reserva delete(id)"});
 
                 // 💳 PAGO
                 data.add(new String[]{"PAGO", "pago get() → Lista todos"});
                 data.add(new String[]{"PAGO", "pago get(id) → Obtiene por ID"});
                 data.add(new String[]{"PAGO", "pago add(desde,fecha,hasta,estado,tipo_pago,pagofacil_transaction_id,reserva_id)"});
-                data.add(new String[]{"PAGO", "pago modify(id,desde,fecha,hasta,estado,tipo_pago,pagofacil_transaction_id,reserva_id)"});
+                data.add(new String[]{"PAGO", "pago modify(id,estado,metodo_pago)"});
                 data.add(new String[]{"PAGO", "pago delete(id)"});
 
                 // 🔔 NOTIFICACIÓN
@@ -1328,7 +1321,7 @@ public class EmailApp implements ICasoUsoListener, IEmailListener {
                 data.add(new String[]{"AYUDA", "help() o help get() → Muestra esta ayuda"});
 
                 /* ═══════════════════════════ NOTAS IMPORTANTES ═══════════════════════════ */
-
+                data.add(new String[]{"📝 NOTA", "Usar parametros en lo posible en minusculas para evitar fallos"});
                 data.add(new String[]{"📝 NOTA", "Fechas formato: YYYY-MM-DD (ej: 2024-01-15)"});
                 data.add(new String[]{"📝 NOTA", "Booleanos: true o false (sin comillas)"});
                 data.add(new String[]{"📝 NOTA", "Números: sin comillas (ej: 1000, 120.5)"});
